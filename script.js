@@ -367,6 +367,123 @@
     }
   };
 
+  // Comprehensive Haute Boutique Catalog: Fragrances, Skincare, Gifts & Sets
+  const CATALOG = {
+    // Fragrances
+    blush: {
+      id: 'blush',
+      category: 'fragrance',
+      title: 'Bellavita Blush',
+      subtitle: 'Eau de Parfum · 100 ml',
+      price: 75,
+      img: 'frames/ezgif-frame-001.jpg',
+      badge: 'HAUTE PARFUM'
+    },
+    rose: {
+      id: 'rose',
+      category: 'fragrance',
+      title: 'Bellavita Rosé Woman',
+      subtitle: 'Eau de Parfum · 20 ml',
+      price: 19,
+      img: 'assets/bellavita-rose-woman-cutout.png',
+      badge: '50% OFF'
+    },
+    white_oud: {
+      id: 'white_oud',
+      category: 'fragrance',
+      title: 'Bellavita White Oud',
+      subtitle: 'Eau de Parfum · 100 ml',
+      price: 85,
+      img: 'assets/bellavita-white-oud-thumb.png',
+      badge: 'NOBLE OUD'
+    },
+    honey_oud: {
+      id: 'honey_oud',
+      category: 'fragrance',
+      title: 'Bellavita Honey Oud',
+      subtitle: 'Eau de Parfum · 100 ml',
+      price: 80,
+      img: 'assets/bellavita-honey-oud-thumb.png',
+      badge: 'GOLDEN NECTAR'
+    },
+
+    // Haute Botanical Skincare
+    gold_elixir: {
+      id: 'gold_elixir',
+      category: 'skincare',
+      title: '24K Gold Face Elixir',
+      subtitle: 'Pure Gold Leaf & Rosehip · 30 ml',
+      price: 68,
+      img: 'assets/skincare-gold-elixir.jpg',
+      badge: 'HAUTE SKINCARE'
+    },
+    rose_mist: {
+      id: 'rose_mist',
+      category: 'skincare',
+      title: 'Royal Damask Rose Mist',
+      subtitle: 'Cellular Hydration · 100 ml',
+      price: 38,
+      img: 'assets/skincare-rose-mist.jpg',
+      badge: 'HAUTE SKINCARE'
+    },
+    truffle_cream: {
+      id: 'truffle_cream',
+      category: 'skincare',
+      title: 'White Truffle Sovereign Crème',
+      subtitle: 'Cellular Restoration · 50 ml',
+      price: 85,
+      img: 'assets/skincare-truffle-cream.jpg',
+      badge: 'HAUTE SKINCARE'
+    },
+    honey_balm: {
+      id: 'honey_balm',
+      category: 'skincare',
+      title: 'Saffron & Honey Glow Balm',
+      subtitle: 'Overnight Nectar Mask · 50 ml',
+      price: 54,
+      img: 'assets/skincare-honey-balm.jpg',
+      badge: 'HAUTE SKINCARE'
+    },
+
+    // Royal Gifts & Sets
+    discovery_set: {
+      id: 'discovery_set',
+      category: 'gift',
+      title: 'The Grand Discovery Coffret',
+      subtitle: 'Haute Parfumerie Set · 4 × 10 ml',
+      price: 65,
+      img: 'assets/gift-discovery-coffret.jpg',
+      badge: 'ROYAL GIFT'
+    },
+    emperor_set: {
+      id: 'emperor_set',
+      category: 'gift',
+      title: "Emperor's 24K Gold Coffret",
+      subtitle: 'Limited Imperial Set · 100 ml',
+      price: 145,
+      img: 'assets/gift-emperor-set.jpg',
+      badge: 'COLLECTOR SET'
+    },
+    monogram_pouch: {
+      id: 'monogram_pouch',
+      category: 'gift',
+      title: 'Bespoke Velvet Monogram Pouch',
+      subtitle: 'Hand-Stitched Burgundy Velvet',
+      price: 28,
+      img: 'assets/gift-monogram-pouch.jpg',
+      badge: 'ROYAL ACCESSORY'
+    },
+    amber_candle: {
+      id: 'amber_candle',
+      category: 'gift',
+      title: 'Versailles Amber Candle',
+      subtitle: 'Bougie Parfumée · 280 g · 65hr',
+      price: 48,
+      img: 'assets/gift-amber-candle.jpg',
+      badge: 'ROYAL HOME'
+    }
+  };
+
   // State
   let currentFrame = 0;
   let isAnimationPlaying = true;
@@ -374,9 +491,19 @@
   let loadedFramesCount = 0;
   const frameImages = new Array(TOTAL_FRAMES);
 
-  // E-Commerce State
-  let cartCount = 1;
-  let wishlistCount = 1;
+  // E-Commerce Dynamic State
+  let cartItems = [
+    { id: 'blush', size: '100ml', price: 75, qty: 1 },
+    { id: 'gold_elixir', size: '30ml', price: 68, qty: 1 }
+  ];
+
+  let wishlistItems = [
+    { id: 'blush', size: '100ml', price: 75 },
+    { id: 'rose_mist', size: '100ml', price: 38 },
+    { id: 'discovery_set', size: '4x10ml', price: 65 }
+  ];
+  let activeWishlistFilter = 'all';
+
   let selectedSize = '100ml';
   let selectedPrice = 75;
   let isPetalsEnabled = true;
@@ -1760,72 +1887,398 @@
     const btnAddToBag = document.getElementById('btn-add-to-bag');
     if (btnAddToBag) {
       btnAddToBag.addEventListener('click', () => {
-        cartCount++;
-        updateCartDisplay();
+        addToCart(activeProduct, selectedSize, selectedPrice, true);
+      });
+    }
+
+    // =========================================================================
+    // DYNAMIC SHOPPING BAG & WISHLIST ENGINE (HAUTE CATALOG)
+    // =========================================================================
+
+    function renderCart() {
+      const badge = document.getElementById('cart-badge');
+      const headerCount = document.getElementById('cart-count-header');
+      const subtotalEl = document.getElementById('cart-subtotal');
+      const totalEl = document.getElementById('cart-total');
+      const container = document.getElementById('cart-items-list');
+      const upsellContainer = document.getElementById('cart-upsell-shelf');
+
+      const totalQty = cartItems.reduce((acc, item) => acc + item.qty, 0);
+      const subtotal = cartItems.reduce((acc, item) => acc + (item.price * item.qty), 0);
+
+      if (badge) badge.textContent = totalQty;
+      if (headerCount) headerCount.textContent = totalQty;
+      if (subtotalEl) subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+      if (totalEl) totalEl.textContent = `$${subtotal.toFixed(2)}`;
+
+      if (container) {
+        if (cartItems.length === 0) {
+          container.innerHTML = `
+            <div style="text-align:center; padding:2.5rem 1rem; color:#6e6259;">
+              <div style="font-size:2rem; margin-bottom:0.5rem; opacity:0.8;">⚜</div>
+              <p style="font-family:var(--font-serif); font-size:1.15rem; color:var(--color-text-dark); margin-bottom:0.3rem;">Your Luxury Bag is Empty</p>
+              <p style="font-size:0.75rem; font-style:italic;">Discover our botanical skincare, fragrances & imperial gifts below.</p>
+            </div>
+          `;
+        } else {
+          container.innerHTML = cartItems.map((item, idx) => {
+            const prod = CATALOG[item.id] || PRODUCTS[item.id] || {
+              title: item.title || 'Luxury Creation',
+              category: 'fragrance',
+              badge: 'MAISON ROYALE',
+              img: 'frames/ezgif-frame-001.jpg'
+            };
+            const catBadgeClass = prod.category || 'fragrance';
+            const catBadgeLabel = prod.badge || (catBadgeClass === 'skincare' ? 'HAUTE SKINCARE' : (catBadgeClass === 'gift' ? 'ROYAL GIFT' : 'HAUTE PARFUM'));
+            const sizeLabel = item.size ? `${item.size.toUpperCase()}` : (prod.subtitle || '');
+
+            return `
+              <div class="cart-item">
+                <img src="${prod.img}" class="cart-item-img" alt="${prod.title}">
+                <div class="cart-item-details">
+                  <div class="cart-item-top">
+                    <div>
+                      <span class="cat-badge ${catBadgeClass}">${catBadgeLabel}</span>
+                      <h4 class="cart-item-name">${prod.title}</h4>
+                    </div>
+                    <button class="remove-cart-item" data-cart-remove="${idx}" title="Remove Item">&times;</button>
+                  </div>
+                  <span class="cart-item-size">${sizeLabel}</span>
+                  <div class="cart-item-controls">
+                    <div class="quantity-stepper">
+                      <button class="qty-btn minus" data-cart-qty="${idx}" data-delta="-1">−</button>
+                      <span class="qty-val">${item.qty}</span>
+                      <button class="qty-btn plus" data-cart-qty="${idx}" data-delta="1">+</button>
+                    </div>
+                    <span class="cart-item-price">$${(item.price * item.qty).toFixed(2)}</span>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join('');
+
+          // Bind quantity steppers
+          container.querySelectorAll('[data-cart-qty]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              const idx = parseInt(btn.getAttribute('data-cart-qty'), 10);
+              const delta = parseInt(btn.getAttribute('data-delta'), 10);
+              updateCartQty(idx, delta);
+            });
+          });
+
+          // Bind remove buttons
+          container.querySelectorAll('[data-cart-remove]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              const idx = parseInt(btn.getAttribute('data-cart-remove'), 10);
+              removeFromCart(idx);
+            });
+          });
+        }
+      }
+
+      // Upsell shelf inside cart
+      if (upsellContainer) {
+        const cartIds = new Set(cartItems.map(i => i.id));
+        const upsellCandidates = ['rose_mist', 'discovery_set', 'gold_elixir', 'amber_candle', 'truffle_cream', 'honey_balm'];
+        const upsellItems = upsellCandidates.filter(id => !cartIds.has(id)).slice(0, 4);
+
+        if (upsellItems.length === 0) {
+          upsellContainer.innerHTML = `<p style="font-size:0.75rem; color:#6e6259; font-style:italic; padding:0.5rem;">All featured royal creations added to bag.</p>`;
+        } else {
+          upsellContainer.innerHTML = upsellItems.map(id => {
+            const p = CATALOG[id];
+            if (!p) return '';
+            return `
+              <div class="cart-upsell-card">
+                <img src="${p.img}" alt="${p.title}" class="cart-upsell-thumb">
+                <span class="cat-badge ${p.category}">${p.badge}</span>
+                <h5 class="cart-upsell-name">${p.title}</h5>
+                <span class="cart-upsell-price">$${p.price.toFixed(2)}</span>
+                <button class="cart-upsell-btn" data-cart-quickadd="${id}">+ ADD</button>
+              </div>
+            `;
+          }).join('');
+
+          upsellContainer.querySelectorAll('[data-cart-quickadd]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              const id = btn.getAttribute('data-cart-quickadd');
+              addToCart(id, null, null, false);
+            });
+          });
+        }
+      }
+    }
+
+    function renderWishlist() {
+      const badge = document.getElementById('wishlist-badge');
+      const headerCount = document.getElementById('wishlist-count-header');
+      const container = document.getElementById('wishlist-items-container');
+      const recsGrid = document.getElementById('wishlist-recs-grid');
+
+      // Update Filter counts
+      const countAll = wishlistItems.length;
+      let countFrag = 0;
+      let countSkin = 0;
+      let countGift = 0;
+
+      wishlistItems.forEach(item => {
+        const cat = (CATALOG[item.id] ? CATALOG[item.id].category : 'fragrance');
+        if (cat === 'fragrance') countFrag++;
+        else if (cat === 'skincare') countSkin++;
+        else if (cat === 'gift') countGift++;
+      });
+
+      const elAll = document.getElementById('wf-count-all');
+      const elFrag = document.getElementById('wf-count-fragrance');
+      const elSkin = document.getElementById('wf-count-skincare');
+      const elGift = document.getElementById('wf-count-gift');
+
+      if (elAll) elAll.textContent = countAll;
+      if (elFrag) elFrag.textContent = countFrag;
+      if (elSkin) elSkin.textContent = countSkin;
+      if (elGift) elGift.textContent = countGift;
+
+      if (badge) badge.textContent = countAll;
+      if (headerCount) headerCount.textContent = countAll;
+
+      // Filter
+      const displayed = activeWishlistFilter === 'all'
+        ? wishlistItems
+        : wishlistItems.filter(item => {
+            const cat = (CATALOG[item.id] ? CATALOG[item.id].category : 'fragrance');
+            return cat === activeWishlistFilter;
+          });
+
+      if (container) {
+        if (displayed.length === 0) {
+          container.innerHTML = `
+            <div style="text-align:center; padding:2rem 1rem; color:#6e6259;">
+              <div style="font-size:1.8rem; margin-bottom:0.4rem; opacity:0.8;">♡</div>
+              <p style="font-family:var(--font-serif); font-size:1.1rem; color:var(--color-text-dark); margin-bottom:0.3rem;">No Saved Items in this Category</p>
+              <p style="font-size:0.75rem; font-style:italic;">Save botanical elixirs, fragrances, or royal gift sets below.</p>
+            </div>
+          `;
+        } else {
+          container.innerHTML = displayed.map(item => {
+            const prod = CATALOG[item.id] || PRODUCTS[item.id] || {
+              title: item.title || 'Saved Creation',
+              category: 'fragrance',
+              badge: 'MAISON ROYALE',
+              img: 'frames/ezgif-frame-001.jpg',
+              price: item.price || 75
+            };
+            const catBadgeClass = prod.category || 'fragrance';
+            const catBadgeLabel = prod.badge || (catBadgeClass === 'skincare' ? 'HAUTE SKINCARE' : (catBadgeClass === 'gift' ? 'ROYAL GIFT' : 'HAUTE PARFUM'));
+            const sizeLabel = item.size ? `${item.size.toUpperCase()}` : (prod.subtitle || '');
+
+            return `
+              <div class="wishlist-item">
+                <img src="${prod.img}" class="cart-item-img" alt="${prod.title}">
+                <div class="cart-item-details">
+                  <div class="cart-item-top">
+                    <div>
+                      <span class="cat-badge ${catBadgeClass}">${catBadgeLabel}</span>
+                      <h4 class="cart-item-name">${prod.title}</h4>
+                    </div>
+                    <button class="remove-cart-item" data-wishlist-remove="${item.id}" title="Remove">&times;</button>
+                  </div>
+                  <span class="cart-item-size">${sizeLabel}</span>
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.5rem;">
+                    <span class="cart-item-price">$${(item.price || prod.price).toFixed(2)}</span>
+                    <button class="move-to-bag-btn" data-wishlist-move="${item.id}">MOVE TO BAG</button>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join('');
+
+          // Bind Move to Bag
+          container.querySelectorAll('[data-wishlist-move]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              const id = btn.getAttribute('data-wishlist-move');
+              moveWishlistToCart(id);
+            });
+          });
+
+          // Bind Remove
+          container.querySelectorAll('[data-wishlist-remove]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              const id = btn.getAttribute('data-wishlist-remove');
+              removeFromWishlist(id);
+            });
+          });
+        }
+      }
+
+      // Recommendations in Wishlist
+      if (recsGrid) {
+        const wishIds = new Set(wishlistItems.map(i => i.id));
+        const recCandidates = ['gold_elixir', 'emperor_set', 'honey_balm', 'amber_candle', 'rose_mist', 'discovery_set'];
+        const recItems = recCandidates.filter(id => !wishIds.has(id)).slice(0, 4);
+
+        if (recItems.length === 0) {
+          recsGrid.innerHTML = `<p style="font-size:0.75rem; color:#6e6259; font-style:italic; padding:0.5rem;">You have saved all featured creations to your royal wishlist.</p>`;
+        } else {
+          recsGrid.innerHTML = recItems.map(id => {
+            const p = CATALOG[id];
+            if (!p) return '';
+            return `
+              <div class="wishlist-rec-card">
+                <img src="${p.img}" alt="${p.title}" class="wishlist-rec-thumb">
+                <span class="cat-badge ${p.category}">${p.badge}</span>
+                <h5 class="wishlist-rec-name">${p.title}</h5>
+                <span class="wishlist-rec-price">$${p.price.toFixed(2)}</span>
+                <button class="wishlist-rec-btn" data-wishlist-addrec="${id}">+ WISHLIST</button>
+              </div>
+            `;
+          }).join('');
+
+          recsGrid.querySelectorAll('[data-wishlist-addrec]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              const id = btn.getAttribute('data-wishlist-addrec');
+              addToWishlist(id);
+            });
+          });
+        }
+      }
+    }
+
+    function addToCart(productId, size = null, price = null, openDrawer = true) {
+      const prod = CATALOG[productId] || PRODUCTS[productId];
+      if (!prod) return;
+
+      const itemSize = size || prod.size || 'Standard';
+      const itemPrice = (price !== null && price !== undefined) ? price : prod.price;
+
+      // Check if item with same ID and size exists
+      const existing = cartItems.find(it => it.id === productId && (!size || it.size === size));
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cartItems.push({
+          id: productId,
+          size: itemSize,
+          price: itemPrice,
+          qty: 1
+        });
+      }
+
+      playRoyalChime();
+      showToast(`👑 Added ${prod.title} to Luxury Bag`);
+      renderCart();
+
+      if (openDrawer) {
         closeAllOverlays();
-        document.getElementById('cart-drawer-backdrop').classList.add('open');
-        const prod = PRODUCTS[activeProduct] || PRODUCTS.blush;
-        showToast(`✨ Added ${prod.title} (${selectedSize.toUpperCase()}) to Luxury Bag`);
-      });
+        const cartDrawer = document.getElementById('cart-drawer-backdrop');
+        if (cartDrawer) cartDrawer.classList.add('open');
+      }
     }
 
-    // Wishlist Move to Bag
-    const btnWishlistMove = document.getElementById('btn-wishlist-move');
-    if (btnWishlistMove) {
-      btnWishlistMove.addEventListener('click', () => {
-        cartCount++;
-        wishlistCount = Math.max(0, wishlistCount - 1);
-        updateCartDisplay();
-        document.getElementById('wishlist-badge').textContent = wishlistCount;
-        document.getElementById('wishlist-count-header').textContent = wishlistCount;
-        const wishItem = document.getElementById('wishlist-item-main');
-        if (wishItem) wishItem.innerHTML = '<p style="font-style:italic; color:#6e6259; padding:1rem;">Your saved creations have been moved to your shopping bag.</p>';
-        const prod = PRODUCTS[activeProduct] || PRODUCTS.blush;
-        showToast(`Moved ${prod.title} to Shopping Bag`);
-      });
-    }
-
-    // Cart Quantity Steppers
-    const btnQtyMinus = document.getElementById('btn-qty-minus');
-    const btnQtyPlus = document.getElementById('btn-qty-plus');
-    const cartQtyVal = document.getElementById('cart-qty-val');
-    const removeCartItem = document.querySelector('.remove-cart-item');
-
-    if (btnQtyPlus && cartQtyVal) {
-      btnQtyPlus.addEventListener('click', () => {
-        cartCount++;
-        cartQtyVal.textContent = cartCount;
-        updateCartDisplay();
-      });
-    }
-
-    if (btnQtyMinus && cartQtyVal) {
-      btnQtyMinus.addEventListener('click', () => {
-        if (cartCount > 1) {
-          cartCount--;
-          cartQtyVal.textContent = cartCount;
-          updateCartDisplay();
+    function updateCartQty(index, delta) {
+      if (cartItems[index]) {
+        cartItems[index].qty += delta;
+        if (cartItems[index].qty <= 0) {
+          const removed = cartItems.splice(index, 1)[0];
+          const prod = CATALOG[removed.id] || PRODUCTS[removed.id];
+          showToast(`Removed ${prod ? prod.title : 'item'} from bag`);
         }
-      });
+        renderCart();
+      }
     }
 
-    if (removeCartItem) {
-      removeCartItem.addEventListener('click', () => {
-        cartCount = 0;
-        updateCartDisplay();
-        const container = document.getElementById('cart-items-list');
-        if (container) {
-          container.innerHTML = '<p style="font-style:italic; color:#6e6259; padding:1.5rem; text-align:center;">Your shopping bag is currently empty.</p>';
-        }
-        showToast('Removed from bag');
-      });
+    function removeFromCart(index) {
+      if (cartItems[index]) {
+        const removed = cartItems.splice(index, 1)[0];
+        const prod = CATALOG[removed.id] || PRODUCTS[removed.id];
+        showToast(`Removed ${prod ? prod.title : 'item'} from bag`);
+        renderCart();
+      }
     }
+
+    function addToWishlist(productId) {
+      const prod = CATALOG[productId] || PRODUCTS[productId];
+      if (!prod) return;
+
+      if (wishlistItems.some(it => it.id === productId)) {
+        showToast(`⚜ ${prod.title} is already saved in your Wishlist`);
+        return;
+      }
+
+      wishlistItems.push({
+        id: productId,
+        size: prod.size || '100ml',
+        price: prod.price
+      });
+
+      playRoyalChime();
+      showToast(`♡ Saved ${prod.title} to Wishlist`);
+      renderWishlist();
+    }
+
+    function removeFromWishlist(productId) {
+      const idx = wishlistItems.findIndex(it => it.id === productId);
+      if (idx !== -1) {
+        const removed = wishlistItems.splice(idx, 1)[0];
+        const prod = CATALOG[removed.id] || PRODUCTS[removed.id];
+        showToast(`Removed ${prod ? prod.title : 'item'} from Wishlist`);
+        renderWishlist();
+      }
+    }
+
+    function moveWishlistToCart(productId) {
+      const wishIdx = wishlistItems.findIndex(it => it.id === productId);
+      const prod = CATALOG[productId] || PRODUCTS[productId];
+      if (wishIdx !== -1) {
+        wishlistItems.splice(wishIdx, 1);
+      }
+      addToCart(productId, null, null, false);
+      renderWishlist();
+      showToast(`✨ Moved ${prod ? prod.title : 'Creation'} to Luxury Bag`);
+    }
+
+    function updateCartDisplay() {
+      renderCart();
+      renderWishlist();
+    }
+
+    // Wishlist Category Filter Tab clicks
+    document.querySelectorAll('.wishlist-filter-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        document.querySelectorAll('.wishlist-filter-pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        activeWishlistFilter = pill.getAttribute('data-filter') || 'all';
+        renderWishlist();
+      });
+    });
+
+    // Menu Drawer action buttons (+ BAG & ♡ SAVE)
+    document.querySelectorAll('[data-action="menu-add-bag"]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.getAttribute('data-id');
+        if (id) addToCart(id, null, null, true);
+      });
+    });
+
+    document.querySelectorAll('[data-action="menu-add-wishlist"]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.getAttribute('data-id');
+        if (id) addToWishlist(id);
+      });
+    });
 
     // Checkout button
     const btnCheckout = document.getElementById('btn-checkout');
     if (btnCheckout) {
       btnCheckout.addEventListener('click', () => {
-        if (cartCount === 0) {
+        if (cartItems.length === 0) {
           showToast('Your luxury bag is empty.');
           return;
         }
@@ -1857,18 +2310,21 @@
       }
 
       const accords = [
+        { name: '24K Gold Botanical Face Elixir', type: 'Haute Skincare · Pure Gold Leaf & Rosehip', price: '$68.00' },
+        { name: 'Royal Damask Rose Mist', type: 'Haute Skincare · Cellular Hydration', price: '$38.00' },
+        { name: 'The Grand Royal Discovery Coffret', type: 'Imperial Gift · 4 × 10ml Miniature Set', price: '$65.00' },
+        { name: 'Versailles Imperial Amber Candle', type: 'Royal Gift · Bougie Parfumée 65hr', price: '$48.00' },
         { name: 'Jasmine Sambac Accord', type: 'Floral Heart Note · Dawn Harvest', price: '$75.00' },
         { name: 'Calabrian Italian Mandarin', type: 'Citrus Top Note · Cold Pressed', price: '$75.00' },
         { name: 'Dewy Peach Nectar', type: 'Fruity Top Note · Velvety Blush', price: '$75.00' },
         { name: 'Golden Amber Extrait', type: 'Warm Base Note · Mediterranean Sun', price: '$80.00' },
-        { name: 'Bellavita Blush 100ml Flacon', type: 'Full Size Heavy Crystal Presentation', price: '$75.00' },
-        { name: 'Bellavita Blush Pocket Spray 20ml', type: 'Handbag Travel Atomizer', price: '$24.00' }
+        { name: 'Bellavita Blush 100ml Flacon', type: 'Full Size Heavy Crystal Presentation', price: '$75.00' }
       ];
 
       const matches = accords.filter(a => a.name.toLowerCase().includes(query) || a.type.toLowerCase().includes(query));
 
       if (matches.length === 0) {
-        searchResults.innerHTML = `<p style="padding:1rem; color:#6e6259; font-style:italic;">No botanical accords matching "${query}". Try searching "Jasmine" or "100ml".</p>`;
+        searchResults.innerHTML = `<p style="padding:1rem; color:#6e6259; font-style:italic;">No botanical accords matching "${query}". Try searching "Jasmine", "Gold", or "100ml".</p>`;
       } else {
         searchResults.innerHTML = matches.map(m => `
           <div class="cart-item" style="margin-bottom:0.8rem; cursor:pointer;" onclick="document.getElementById('shop-modal-backdrop').classList.add('open')">
@@ -1897,50 +2353,10 @@
         }
       });
     });
-  }
 
-  function updateCartDisplay() {
-    const badge = document.getElementById('cart-badge');
-    const headerCount = document.getElementById('cart-count-header');
-    const subtotalEl = document.getElementById('cart-subtotal');
-    const totalEl = document.getElementById('cart-total');
-
-    if (badge) badge.textContent = cartCount;
-    if (headerCount) headerCount.textContent = cartCount;
-
-    const subtotal = cartCount * selectedPrice;
-    if (subtotalEl) subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
-    if (totalEl) totalEl.textContent = `$${subtotal.toFixed(2)}`;
-
-    const prod = PRODUCTS[activeProduct] || PRODUCTS.blush;
-    const prodName = prod.title;
-    const cartItemName = document.querySelector('.cart-item-name');
-    const cartItemSize = document.querySelector('.cart-item-size');
-    const cartItemPrice = document.querySelector('.cart-item-price');
-    const cartItemImg = document.querySelector('.cart-item-img');
-
-    if (cartItemName) cartItemName.textContent = prodName;
-    if (cartItemSize) cartItemSize.textContent = `${selectedSize.toUpperCase()} · EAU DE PARFUM`;
-    if (cartItemPrice) cartItemPrice.textContent = `$${(selectedPrice * (cartCount || 1)).toFixed(2)}`;
-    if (cartItemImg) {
-      if (activeProduct === 'rose') {
-        cartItemImg.style.backgroundImage = "url('assets/bellavita-rose-woman-cutout.png')";
-        cartItemImg.style.backgroundSize = "contain";
-        cartItemImg.style.backgroundColor = "#fff0f3";
-      } else if (activeProduct === 'white_oud') {
-        cartItemImg.style.backgroundImage = "url('assets/bellavita-white-oud-thumb.png')";
-        cartItemImg.style.backgroundSize = "contain";
-        cartItemImg.style.backgroundColor = "#f8fafc";
-      } else if (activeProduct === 'honey_oud') {
-        cartItemImg.style.backgroundImage = "url('assets/bellavita-honey-oud-thumb.png')";
-        cartItemImg.style.backgroundSize = "contain";
-        cartItemImg.style.backgroundColor = "#fffbeb";
-      } else {
-        cartItemImg.style.backgroundImage = "url('frames/ezgif-frame-001.jpg')";
-        cartItemImg.style.backgroundSize = "cover";
-        cartItemImg.style.backgroundColor = "#f0e2d5";
-      }
-    }
+    // Initial render of cart and wishlist
+    renderCart();
+    renderWishlist();
   }
 
   // =========================================================================
@@ -2071,13 +2487,7 @@
         const slot = btn.getAttribute('data-product');
         if (slot && PRODUCTS[slot]) {
           switchProduct(slot);
-          cartCount++;
-          updateCartDisplay();
-          const cartDrawer = document.getElementById('cart-drawer-backdrop');
-          if (cartDrawer) {
-            cartDrawer.classList.add('open');
-          }
-          showToast(`👑 ${PRODUCTS[slot].title} added to Luxury Bag`);
+          addToCart(slot, PRODUCTS[slot].size, PRODUCTS[slot].price, true);
         }
       });
     });
