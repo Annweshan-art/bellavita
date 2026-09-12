@@ -3536,4 +3536,25 @@ body.theme-honey-oud .shop-now-btn:hover {
   }
 }
 
+/* ==========================================================================
+   SUPPRESS NETLIFY COLLABORATIVE DRAWER & PREVIEW WATERMARK WIDGET
+   ========================================================================== */
+#netlify-drawer,
+iframe#netlify-drawer-frame,
+[data-netlify-deploy-preview-drawer],
+div[class*="netlify-drawer"],
+div[id*="netlify-drawer"],
+iframe[src*="netlify"],
+.netlify-drawer-container {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  position: absolute !important;
+  left: -9999px !important;
+}
+
+
 
