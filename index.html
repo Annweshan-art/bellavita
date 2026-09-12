@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+  <meta name="theme-color" content="#f7ede6">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Maison Bellavita">
+  <meta name="format-detection" content="telephone=no">
+  <title>BELLAVITA LUXURY | Blush Eau De Parfum — Living 3D Experience</title>
+  <meta name="description" content="Immerse yourself in Bellavita Blush Eau De Parfum. A living 3D floral sanctuary with moving jasmine blossoms, sunlit shadows, and a timeless flacon.">
+  
+  <!-- Premium Google Fonts: Cinzel, Cormorant Garamond, Montserrat -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,600&family=Montserrat:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css?v=2.3">
+</head>
+<body>
+  <!-- 1. Ambient 300-Frame Cinemagraph Canvas (Static Bottle + Continuously Moving Flowers) -->
+  <canvas id="animation-canvas" aria-label="3D Cinemagraph showing living flowers moving around static Bellavita Blush flacon"></canvas>
+
+  <!-- Royal Golden Light Rays (God Rays) Canvas -->
+  <canvas id="royal-rays" aria-hidden="true"></canvas>
+
+  <!-- Royal Golden Aura & Crown Halos around Flacon -->
+  <div id="royal-aura" class="royal-aura" aria-hidden="true"></div>
+
+  <!-- 2. Real-Time 3D Floating Blossom Petals & 24K Gilded Gold Leaf Layer -->
+  <canvas id="particles-3d" aria-hidden="true"></canvas>
+
+  <!-- 3. Real-Time 3D Fragrance Spray Mist Simulation Canvas -->
+  <canvas id="spray-canvas" aria-hidden="true"></canvas>
+
+  <!-- 4. Interactive 3D Flacon Magnifier Inspector Lens -->
+  <div id="magnifier-lens" class="magnifier-lens" aria-hidden="true">
+    <canvas id="magnifier-canvas"></canvas>
+    <div class="magnifier-reticle"></div>
+    <div class="magnifier-tag">FLACON INSPECTOR 2.5×</div>
+  </div>
+
+  <!-- 5. Dynamic Cursor Sunbeam Highlight -->
+  <div class="cursor-glow" id="cursor-glow" aria-hidden="true"></div>
+
+  <!-- 6. Luxury Warm Champagne Scrim Overlay (Maintains Warm Daylight Beauty while Ensuring Crisp Text Contrast) -->
+  <div class="video-overlay-scrim" aria-hidden="true"></div>
+
+  <!-- 7. Soft Studio Vignette -->
+  <div class="luxury-vignette" aria-hidden="true"></div>
+
+  <!-- 8. Luxury Preloader -->
+  <div id="loader" class="luxury-loader">
+    <div class="loader-content">
+      <div class="loader-royal-crown">👑</div>
+      <div class="loader-monogram">BV</div>
+      <div class="loader-brand">BELLAVITA</div>
+      <div class="loader-sub">MAISON ROYALE · HAUTE PARFUMERIE</div>
+      <div class="loader-track">
+        <div id="loader-bar" class="loader-bar"></div>
+      </div>
+      <div class="loader-status">
+        <span id="loader-percent">0%</span> · INITIALIZING ROYAL FLORAL SANCTUARY
+      </div>
+    </div>
+  </div>
+
+  <!-- 9. Top Navigation Header -->
+  <header class="navbar" id="navbar">
+    <div class="nav-left">
+      <!-- Hamburger Menu Button -->
+      <button class="nav-icon-btn menu-toggle-btn" id="btn-menu" aria-label="Open Boutique Menu" title="Menu">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+
+      <!-- Primary Nav Links -->
+      <nav class="nav-links">
+        <button class="nav-link-btn active" id="nav-home">HOME</button>
+        <button class="nav-link-btn" id="nav-collection">COLLECTIONS</button>
+        <button class="nav-link-btn" id="nav-about">THE MAISON</button>
+      </nav>
+    </div>
+
+    <!-- Center Brand Logo -->
+    <div class="nav-center">
+      <button class="brand-logo-btn" id="nav-brand" aria-label="Bellavita Luxury Home">
+        <span class="royal-nav-crown-icon">👑</span>
+        <span class="brand-name">BELLAVITA</span>
+        <span class="brand-sub">MAISON ROYALE · HAUTE PARFUMERIE</span>
+      </button>
+    </div>
+
+    <!-- Right Actions & Controls -->
+    <div class="nav-right">
+      <nav class="nav-links-right">
+        <button class="nav-link-btn" id="nav-gallery">GALLERY</button>
+        <button class="nav-link-btn" id="nav-contact">CONCIERGE</button>
+      </nav>
+
+      <div class="nav-icons-group">
+        <!-- Search Button -->
+        <button class="nav-icon-btn" id="btn-search" aria-label="Search Fragrance Accords" title="Search Accords">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </button>
+
+        <!-- Wishlist Button -->
+        <button class="nav-icon-btn" id="btn-wishlist" aria-label="View Saved Items" title="Wishlist">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+          </svg>
+          <span class="badge-count" id="wishlist-badge">1</span>
+        </button>
+
+        <!-- Shopping Bag Button -->
+        <button class="nav-icon-btn" id="btn-cart" aria-label="View Shopping Bag" title="Shopping Bag">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <path d="M16 10a4 4 0 0 1-8 0"></path>
+          </svg>
+          <span class="badge-count" id="cart-badge">1</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- 10. Main 3D Perspective Hero Showcase -->
+  <main class="hero-container" id="hero-interactive">
+    <div class="hero-content-left" id="hero-card">
+      <!-- Royal Filigree Corner Ornaments -->
+      <div class="royal-filigree top-left" aria-hidden="true"></div>
+      <div class="royal-filigree top-right" aria-hidden="true"></div>
+      <div class="royal-filigree bottom-left" aria-hidden="true"></div>
+      <div class="royal-filigree bottom-right" aria-hidden="true"></div>
+
+      <!-- Royal Crest & Imperial Crown Header -->
+      <div class="royal-crest-banner">
+        <div class="royal-crown-icon">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+            <path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/>
+          </svg>
+        </div>
+        <span class="royal-warrant-title">BY ROYAL WARRANT OF HAUTE PARFUMERIE</span>
+        <span class="royal-crest-pill">👑 ÉDITION ROYALE</span>
+      </div>
+
+      <!-- Sub-Brand & Heritage Badge -->
+      <div class="hero-subbrand-wrap">
+        <span class="subbrand-badge">MAISON BELLAVITA</span>
+        <span class="subbrand-dot">·</span>
+        <span class="subbrand-type">HAUTE PARFUMERIE</span>
+      </div>
+
+      <!-- Royal Perfume Collection Switcher (Clean, Native, Minimalist) -->
+      <div class="flacon-switcher-nav" aria-label="Select Perfume Creation">
+        <button class="switcher-pill-btn active" id="btn-switch-blush" data-product="blush" title="View Bellavita Blush">
+          <span class="switcher-dot"></span>
+          <span>BLUSH</span>
+        </button>
+        <button class="switcher-pill-btn" id="btn-switch-rose" data-product="rose" title="View Bellavita Rosé Woman">
+          <span class="switcher-dot rose"></span>
+          <span>ROSÉ WOMAN</span>
+          <span class="switcher-badge discount">50% OFF</span>
+        </button>
+        <button class="switcher-pill-btn" id="btn-switch-white-oud" data-product="white_oud" title="View Bellavita White Oud">
+          <span class="switcher-dot white-oud"></span>
+          <span>WHITE OUD</span>
+        </button>
+        <button class="switcher-pill-btn" id="btn-switch-honey-oud" data-product="honey_oud" title="View Bellavita Honey Oud">
+          <span class="switcher-dot honey-oud"></span>
+          <span>HONEY OUD</span>
+        </button>
+      </div>
+
+      <!-- Main Product Title -->
+      <h1 class="hero-title" id="btn-hero-title" title="Bellavita Perfume Title">
+        BLUSH
+      </h1>
+      <div class="hero-subtitle" id="hero-subtitle-text">EAU DE PARFUM POUR FEMME</div>
+
+      <!-- Tagline Mood Buttons -->
+      <div class="hero-tagline-group">
+        <button class="tagline-btn active" data-mood="radiant" title="Radiant daytime radiance">RADIANT.</button>
+        <button class="tagline-btn" data-mood="feminine" title="Velvety floral romance">FEMININE.</button>
+        <button class="tagline-btn" data-mood="timeless" title="Enduring golden sillage">TIMELESS.</button>
+      </div>
+
+      <!-- Poetic Fragrance Description -->
+      <p class="hero-description" id="hero-description-text">
+        A luminous celebration of dewy white blossoms bathed in warm Mediterranean sunlight. The delicate jasmine petals dance perpetually in the soft breeze, cradling a timeless flacon of crystalline elegance.
+      </p>
+
+      <!-- Fragrance Notes Section -->
+      <div class="fragrance-notes-wrapper">
+        <div class="notes-heading-row">
+          <button class="notes-heading-btn" id="btn-all-notes" title="Explore Olfactory Pyramid">
+            <span>OLFACTORY PYRAMID</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+          </button>
+          <span class="notes-hint">Click any note to inspect</span>
+        </div>
+
+        <!-- Interactive Note Pills -->
+        <div class="notes-grid" id="hero-notes-grid">
+          <div class="notes-row">
+            <button class="note-pill-btn" data-note="jasmine">
+              <span class="note-dot"></span>Jasmine Sambac
+            </button>
+            <span class="note-separator">·</span>
+            <button class="note-pill-btn" data-note="mandarin">
+              <span class="note-dot"></span>Italian Mandarin
+            </button>
+            <span class="note-separator">·</span>
+            <button class="note-pill-btn" data-note="peach">
+              <span class="note-dot"></span>Dewy Peach
+            </button>
+          </div>
+          <div class="notes-row">
+            <button class="note-pill-btn" data-note="peony">
+              <span class="note-dot"></span>Blush Peony
+            </button>
+            <span class="note-separator">·</span>
+            <button class="note-pill-btn" data-note="amber">
+              <span class="note-dot"></span>Golden Amber
+            </button>
+            <span class="note-separator">·</span>
+            <button class="note-pill-btn" data-note="musk">
+              <span class="note-dot"></span>Sheer Musk
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons Area -->
+      <div class="cta-action-area">
+        <div class="cta-buttons-row">
+          <button class="shop-now-btn" id="btn-shop-now" aria-label="Shop Fragrance Now">
+            <span class="btn-text" id="purchase-btn-text">PURCHASE FLACON</span>
+            <span class="btn-arrow">→</span>
+          </button>
+
+          <!-- 3D Spray Fragrance Button -->
+          <button class="spray-fragrance-btn" id="btn-spray-scent" title="Experience 3D Fragrance Mist Spray">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2v4m0 16v-4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"></path>
+            </svg>
+            <span>SPRAY MIST</span>
+          </button>
+
+          <!-- 3D Flacon Magnifier Inspector Toggle -->
+          <button class="inspect-flacon-btn" id="btn-inspect-flacon" title="Toggle 3D Magnifier on Flacon">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              <line x1="11" y1="8" x2="11" y2="14"></line>
+              <line x1="8" y1="11" x2="14" y2="11"></line>
+            </svg>
+            <span id="inspect-btn-text">INSPECT</span>
+          </button>
+        </div>
+
+        <div class="perks-strip" id="hero-perks-strip">
+          <span class="perk-item">⚜ 100ml / 3.4 fl. oz. Extrait</span>
+          <span class="perk-dot">·</span>
+          <span class="perk-item">⚜ Royal Gold Embossed Coffret</span>
+          <span class="perk-dot">·</span>
+          <span class="perk-item">⚜ White-Glove Insured Courier</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Subtle On-Scene Guide Hint -->
+    <div class="interactive-scene-indicator">
+      <div class="indicator-pulse"></div>
+      <span>MOVING FLORAL CINEMAGRAPH · MOVE CURSOR FOR 3D PARALLAX</span>
+    </div>
+
+    <!-- Hero Smooth Scroll-Down Indicator -->
+    <a href="#editorial-reviews-section" class="hero-scroll-down-hint" id="hero-scroll-btn" aria-label="Scroll to Customer Reviews & Scent Stories">
+      <span class="scroll-mouse-icon">
+        <span class="scroll-wheel"></span>
+      </span>
+      <span class="scroll-text">EXPLORE REVIEWS & SCENT STORIES</span>
+      <span class="scroll-arrow">↓</span>
+    </a>
+  </main>
+
+  <!-- 11. Floating 3D Living Atmosphere Controls -->
+  <aside class="ambient-controls" aria-label="3D Scene Atmosphere Controls">
+    <!-- Breeze Speed Control -->
+    <div class="breeze-control-group">
+      <span class="breeze-title">WIND BREEZE</span>
+      <div class="breeze-buttons">
+        <button class="breeze-btn active" data-breeze="normal" title="Gentle Morning Breeze (Natural Flower Sway)">GENTLE</button>
+        <button class="breeze-btn" data-breeze="fresh" title="Summer Bloom Gust (Vigorous Flower Motion)">BREEZE</button>
+        <button class="breeze-btn" data-breeze="still" title="Still Life (Freeze Flower Motion to Inspect)">STILL</button>
+      </div>
+    </div>
+
+    <!-- Royal Golden Aura & 24K Sparkles Toggle -->
+    <button class="control-btn royal-btn active" id="btn-royal-aura" aria-label="Toggle Royal Golden Aura" title="Toggle Royal Golden God Rays & 24K Dust">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+        <path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/>
+      </svg>
+      <span class="control-label" id="royal-aura-label">ROYAL AURA ON</span>
+    </button>
+
+    <!-- 3D Petals Density Toggle -->
+    <button class="control-btn" id="btn-toggle-petals" aria-label="Toggle 3D Floating Petals" title="Toggle 3D Petals">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.93 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.24-.26-.38-.61-.38-1.02 0-.83.67-1.5 1.5-1.5H16c3.31 0 6-2.69 6-6 0-5.5-4.5-9.97-10-9.97z"></path>
+      </svg>
+      <span class="control-label" id="petals-toggle-label">3D PETALS ON</span>
+    </button>
+
+    <!-- Web Audio Ambient Sound Toggle -->
+    <button class="control-btn" id="btn-audio" aria-label="Toggle Garden Breeze Audio" title="Garden Atmosphere Audio">
+      <svg id="icon-sound-off" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8">
+        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+        <line x1="23" y1="9" x2="17" y2="15"></line>
+        <line x1="17" y1="9" x2="23" y2="15"></line>
+      </svg>
+      <svg id="icon-sound-on" class="hidden" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8">
+        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+        <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+      </svg>
+      <span class="control-label">AMBIANCE</span>
+    </button>
+  </aside>
+
+  <!-- ==========================================================================
+       EDITORIAL REVIEWS & SCENT STORIES SECTION (RESPONSIVE BELLAVITA SLOTS)
+       ========================================================================== -->
+  <section class="editorial-reviews-section" id="editorial-reviews-section">
+    <div class="editorial-inner-container">
+      
+      <!-- Section Header -->
+      <div class="editorial-header">
+        <div class="editorial-crown-icon">👑</div>
+        <span class="editorial-sub-badge">⚜ MAISON ROYALE PATRON EXPERIENCES ⚜</span>
+        <h2 class="editorial-main-title">Elegance in <em>Every Scent</em></h2>
+        <p class="editorial-header-desc">
+          Discover luxurious fragrances crafted to captivate, inspire, and leave a lasting impression. Explore authentic scent stories from fragrance connoisseurs across the globe for each sovereign Bellavita flacon.
+        </p>
+      </div>
+
+      <!-- Respective Bellavita Slot Switcher Navigation -->
+      <nav class="editorial-slot-nav" id="editorial-slot-nav" aria-label="Select Bellavita Slot Reviews">
+        <button class="editorial-slot-pill active" data-slot="blush" id="pill-slot-blush">
+          <span class="slot-nav-dot"></span>
+          <span>BLUSH</span>
+        </button>
+        <button class="editorial-slot-pill" data-slot="rose" id="pill-slot-rose">
+          <span class="slot-nav-dot"></span>
+          <span>ROSÉ WOMAN</span>
+          <span class="slot-tag-badge">50% OFF</span>
+        </button>
+        <button class="editorial-slot-pill" data-slot="white_oud" id="pill-slot-white_oud">
+          <span class="slot-nav-dot"></span>
+          <span>WHITE OUD</span>
+        </button>
+        <button class="editorial-slot-pill" data-slot="honey_oud" id="pill-slot-honey_oud">
+          <span class="slot-nav-dot"></span>
+          <span>HONEY OUD</span>
+        </button>
+      </nav>
+
+      <!-- Editorial Showcase Cards Container (4 Respective Slots) -->
+      <div class="editorial-showcase-container">
+
+        <!-- SLOT 1: BELLAVITA BLUSH -->
+        <article class="editorial-slot-card active blush-card" id="editorial-card-blush" style="background-image: url('assets/editorial-blush.png');">
+          <div class="editorial-card-inner">
+            <div class="editorial-left-pane">
+              <h3 class="editorial-headline">Elegance in<br>Every Scent</h3>
+              <p class="editorial-story">
+                Discover luxurious fragrances crafted to captivate, inspire, and leave a lasting impression. Luminous jasmine blossoms kissed by Mediterranean sunbeams and warm golden amber.
+              </p>
+              <button class="editorial-signature-btn" data-action="explore-slot" data-product="blush">
+                <span>Find Your Signature Scent</span>
+                <span>→</span>
+              </button>
+            </div>
+
+            <!-- Customer Testimonial Card (Bottom Left) -->
+            <div class="editorial-testimonial-box" id="testimonial-blush">
+              <div class="testimonial-stars" aria-label="5 out of 5 stars">★★★★★</div>
+              <p class="testimonial-quote">
+                "This perfume makes me feel confident and elegant—absolutely in love!"
+              </p>
+              <div class="testimonial-author-row">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Emily R." class="author-avatar" loading="lazy">
+                <div class="author-meta">
+                  <span class="author-name">Emily R.</span>
+                  <span class="author-verified">✓ Verified Royal Patron</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Floating Flacon Badge (Bottom Right) -->
+          <div class="editorial-floating-badge" id="badge-blush">
+            <img src="assets/editorial-blush.png" alt="Bellavita Blush Flacon" class="floating-badge-thumb" style="object-position: 70% 30%; transform: scale(1.6); border-radius: 8px;">
+            <h4 class="floating-badge-name">Lumière Essence</h4>
+            <span class="floating-badge-detail">BLUSH · 100 ML</span>
+            <button class="floating-badge-cta" data-action="quick-add" data-product="blush">ORDER · $75</button>
+          </div>
+        </article>
+
+        <!-- SLOT 2: BELLAVITA ROSÉ WOMAN -->
+        <article class="editorial-slot-card rose-card" id="editorial-card-rose" style="background-image: url('assets/editorial-rose.jpg');">
+          <div class="editorial-card-inner">
+            <div class="editorial-left-pane">
+              <h3 class="editorial-headline">Velvet Petals of<br>Royal Romance</h3>
+              <p class="editorial-story">
+                An intoxicating symphony of velvety Damask rose, spiced wild strawberries, and solar amber resin, handcrafted for effortless feminine poise and enduring sillage.
+              </p>
+              <button class="editorial-signature-btn" data-action="explore-slot" data-product="rose">
+                <span>Find Your Signature Scent</span>
+                <span>→</span>
+              </button>
+            </div>
+
+            <!-- Customer Testimonial Card (Bottom Left) -->
+            <div class="editorial-testimonial-box" id="testimonial-rose">
+              <div class="testimonial-stars" aria-label="5 out of 5 stars">★★★★★</div>
+              <p class="testimonial-quote">
+                "The velvety Damask rose and strawberry accord last all day on my skin. Pure royalty in a travel flacon!"
+              </p>
+              <div class="testimonial-author-row">
+                <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&auto=format&fit=crop&q=80" alt="Victoria S." class="author-avatar" loading="lazy">
+                <div class="author-meta">
+                  <span class="author-name">Victoria S.</span>
+                  <span class="author-verified">✓ Verified Royal Patron</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Floating Flacon Badge (Bottom Right) -->
+          <div class="editorial-floating-badge" id="badge-rose">
+            <img src="assets/bellavita-rose-woman.png" alt="Bellavita Rosé Woman" class="floating-badge-thumb">
+            <h4 class="floating-badge-name">Rosé Woman</h4>
+            <span class="floating-badge-detail">20 ML · 50% ROYAL SPECIAL</span>
+            <button class="floating-badge-cta" data-action="quick-add" data-product="rose">ORDER · $19</button>
+          </div>
+        </article>
+
+        <!-- SLOT 3: BELLAVITA WHITE OUD -->
+        <article class="editorial-slot-card white-oud-card" id="editorial-card-white_oud" style="background-image: url('assets/editorial-white-oud.jpg');">
+          <div class="editorial-card-inner">
+            <div class="editorial-left-pane">
+              <h3 class="editorial-headline">Noble Majesty &<br>Pristine Allure</h3>
+              <p class="editorial-story">
+                Rare crystalline agarwood distilled to pristine clarity. Accented with imperial white orchids and radiant citrus, embodying sovereign strength and aristocratic distinction.
+              </p>
+              <button class="editorial-signature-btn" data-action="explore-slot" data-product="white_oud">
+                <span>Find Your Signature Scent</span>
+                <span>→</span>
+              </button>
+            </div>
+
+            <!-- Customer Testimonial Card (Bottom Left) -->
+            <div class="editorial-testimonial-box" id="testimonial-white_oud">
+              <div class="testimonial-stars" aria-label="5 out of 5 stars">★★★★★</div>
+              <p class="testimonial-quote">
+                "Pure crystalline perfection. Clean, noble, and deeply magnetic. My signature scent for royal evenings."
+              </p>
+              <div class="testimonial-author-row">
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80" alt="Alexander M." class="author-avatar" loading="lazy">
+                <div class="author-meta">
+                  <span class="author-name">Alexander M.</span>
+                  <span class="author-verified">✓ Verified Royal Patron</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Floating Flacon Badge (Bottom Right) -->
+          <div class="editorial-floating-badge" id="badge-white_oud">
+            <img src="assets/bellavita-white-oud-thumb.png" alt="Bellavita White Oud" class="floating-badge-thumb">
+            <h4 class="floating-badge-name">White Oud</h4>
+            <span class="floating-badge-detail">100 ML · NOBLE AGARWOOD</span>
+            <button class="floating-badge-cta" data-action="quick-add" data-product="white_oud">ORDER · $80</button>
+          </div>
+        </article>
+
+        <!-- SLOT 4: BELLAVITA HONEY OUD -->
+        <article class="editorial-slot-card honey-oud-card" id="editorial-card-honey_oud" style="background-image: url('assets/editorial-honey-oud.jpg');">
+          <div class="editorial-card-inner">
+            <div class="editorial-left-pane">
+              <h3 class="editorial-headline">Golden Nectar<br>of the Orient</h3>
+              <p class="editorial-story">
+                Pure golden wildflower honey dripping into vintage balsamic agarwood smoke. Warm Ceylon cinnamon and lush bourbon vanilla creating an intoxicating, magnetic aura.
+              </p>
+              <button class="editorial-signature-btn" data-action="explore-slot" data-product="honey_oud">
+                <span>Find Your Signature Scent</span>
+                <span>→</span>
+              </button>
+            </div>
+
+            <!-- Customer Testimonial Card (Bottom Left) -->
+            <div class="editorial-testimonial-box" id="testimonial-honey_oud">
+              <div class="testimonial-stars" aria-label="5 out of 5 stars">★★★★★</div>
+              <p class="testimonial-quote">
+                "Liquid gold in a flacon. Decadent honey wrapped in royal oud smoke. Absolutely majestic and luxurious."
+              </p>
+              <div class="testimonial-author-row">
+                <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&auto=format&fit=crop&q=80" alt="Camille L." class="author-avatar" loading="lazy">
+                <div class="author-meta">
+                  <span class="author-name">Camille L.</span>
+                  <span class="author-verified">✓ Verified Royal Patron</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Floating Flacon Badge (Bottom Right) -->
+          <div class="editorial-floating-badge" id="badge-honey_oud">
+            <img src="assets/bellavita-honey-oud-thumb.png" alt="Bellavita Honey Oud" class="floating-badge-thumb">
+            <h4 class="floating-badge-name">Honey Oud</h4>
+            <span class="floating-badge-detail">100 ML · WILD HONEY & OUD</span>
+            <button class="floating-badge-cta" data-action="quick-add" data-product="honey_oud">ORDER · $80</button>
+          </div>
+        </article>
+
+      </div>
+
+      <!-- Infinite Smooth-Scrolling Connoisseur Reviews Marquee -->
+      <div class="marquee-reviews-section">
+        <div class="marquee-header-row">
+          <div class="marquee-heading-left">
+            <span class="editorial-sub-badge">⚜ VERIFIED OLFACTORY REPUTATION ⚜</span>
+            <h3>Voices of Our Royals</h3>
+            <p>Real testimonials from patrons discovering their signature scent across the globe.</p>
+          </div>
+          <button class="btn-open-review-modal" id="btn-open-review-modal">
+            <span>👑</span>
+            <span>WRITE A ROYAL REVIEW</span>
+          </button>
+        </div>
+
+        <div class="marquee-track-container" aria-label="Customer Reviews Marquee">
+          <div class="marquee-track" id="reviews-marquee-track">
+            <!-- Review 1: Blush -->
+            <div class="marquee-review-card">
+              <div class="marquee-card-top">
+                <div class="marquee-stars">★★★★★</div>
+                <span class="marquee-slot-tag">BLUSH</span>
+              </div>
+              <h4 class="marquee-card-title">Pure Sunlit Elegance</h4>
+              <p class="marquee-card-body">
+                "The jasmine sambac in Blush smells like a fresh royal Mediterranean morning. The fragrance lingers on cashmere for days."
+              </p>
+              <div class="marquee-card-footer">
+                <div class="marquee-author-box">
+                  <div class="marquee-avatar">ER</div>
+                  <div class="marquee-author-meta">
+                    <span class="marquee-author-name">Elena R.</span>
+                    <span class="marquee-author-loc">Florence, Italy</span>
+                  </div>
+                </div>
+                <span class="marquee-verified-pill">✓ Verified</span>
+              </div>
+            </div>
+
+            <!-- Review 2: Rosé Woman -->
+            <div class="marquee-review-card">
+              <div class="marquee-card-top">
+                <div class="marquee-stars">★★★★★</div>
+                <span class="marquee-slot-tag" style="background: rgba(183, 44, 28, 0.12); color: #b72c1c; border-color: rgba(183, 44, 28, 0.3);">ROSÉ WOMAN</span>
+              </div>
+              <h4 class="marquee-card-title">A Velvet Rose Masterpiece</h4>
+              <p class="marquee-card-body">
+                "Rosé Woman is breathtaking. Velvety Damask petals and juicy wild berries that turned heads all evening at the opera."
+              </p>
+              <div class="marquee-card-footer">
+                <div class="marquee-author-box">
+                  <div class="marquee-avatar" style="background:#fce7e7; color:#b72c1c;">JB</div>
+                  <div class="marquee-author-meta">
+                    <span class="marquee-author-name">Julian B.</span>
+                    <span class="marquee-author-loc">Paris, France</span>
+                  </div>
+                </div>
+                <span class="marquee-verified-pill">✓ Verified</span>
+              </div>
+            </div>
+
+            <!-- Review 3: White Oud -->
+            <div class="marquee-review-card">
+              <div class="marquee-card-top">
+                <div class="marquee-stars">★★★★★</div>
+                <span class="marquee-slot-tag" style="background: rgba(45, 55, 72, 0.12); color: #2d3748; border-color: rgba(45, 55, 72, 0.3);">WHITE OUD</span>
+              </div>
+              <h4 class="marquee-card-title">Majestic & Crystalline</h4>
+              <p class="marquee-card-body">
+                "White Oud is regal. Clean agarwood without any harshness. Projects sovereign distinction for over 14 hours."
+              </p>
+              <div class="marquee-card-footer">
+                <div class="marquee-author-box">
+                  <div class="marquee-avatar" style="background:#e2e8f0; color:#2d3748;">MT</div>
+                  <div class="marquee-author-meta">
+                    <span class="marquee-author-name">Marcus T.</span>
+                    <span class="marquee-author-loc">Dubai, UAE</span>
+                  </div>
+                </div>
+                <span class="marquee-verified-pill">✓ Verified</span>
+              </div>
+            </div>
+
+            <!-- Review 4: Honey Oud -->
+            <div class="marquee-review-card">
+              <div class="marquee-card-top">
+                <div class="marquee-stars">★★★★★</div>
+                <span class="marquee-slot-tag" style="background: rgba(180, 83, 9, 0.12); color: #b45309; border-color: rgba(180, 83, 9, 0.3);">HONEY OUD</span>
+              </div>
+              <h4 class="marquee-card-title">Liquid Golden Hypnosis</h4>
+              <p class="marquee-card-body">
+                "Honey Oud has that hypnotic golden warmth. The dry-down into bourbon vanilla and smoky oud is divine decadence."
+              </p>
+              <div class="marquee-card-footer">
+                <div class="marquee-author-box">
+                  <div class="marquee-avatar" style="background:#fef3c7; color:#b45309;">CW</div>
+                  <div class="marquee-author-meta">
+                    <span class="marquee-author-name">Charlotte W.</span>
+                    <span class="marquee-author-loc">London, UK</span>
+                  </div>
+                </div>
+                <span class="marquee-verified-pill">✓ Verified</span>
+              </div>
+            </div>
+
+            <!-- Review 5: Blush -->
+            <div class="marquee-review-card">
+              <div class="marquee-card-top">
+                <div class="marquee-stars">★★★★★</div>
+                <span class="marquee-slot-tag">BLUSH</span>
+              </div>
+              <h4 class="marquee-card-title">My Holy Grail Signature</h4>
+              <p class="marquee-card-body">
+                "Blush gives me that effortless regal aura. The peach and jasmine notes are natural, crisp, and so captivating."
+              </p>
+              <div class="marquee-card-footer">
+                <div class="marquee-author-box">
+                  <div class="marquee-avatar">SV</div>
+                  <div class="marquee-author-meta">
+                    <span class="marquee-author-name">Sophia V.</span>
+                    <span class="marquee-author-loc">New York, USA</span>
+                  </div>
+                </div>
+                <span class="marquee-verified-pill">✓ Verified</span>
+              </div>
+            </div>
+
+            <!-- Review 6: Rosé Woman -->
+            <div class="marquee-review-card">
+              <div class="marquee-card-top">
+                <div class="marquee-stars">★★★★★</div>
+                <span class="marquee-slot-tag" style="background: rgba(183, 44, 28, 0.12); color: #b72c1c; border-color: rgba(183, 44, 28, 0.3);">ROSÉ WOMAN</span>
+              </div>
+              <h4 class="marquee-card-title">Unbeatable Royal Deal</h4>
+              <p class="marquee-card-body">
+                "Rosé Woman at 50% off is the discovery of the year. The heavy gold cap and bottle feel so luxurious in my handbag."
+              </p>
+              <div class="marquee-card-footer">
+                <div class="marquee-author-box">
+                  <div class="marquee-avatar" style="background:#fce7e7; color:#b72c1c;">AK</div>
+                  <div class="marquee-author-meta">
+                    <span class="marquee-author-name">Astrid K.</span>
+                    <span class="marquee-author-loc">Stockholm, Sweden</span>
+                  </div>
+                </div>
+                <span class="marquee-verified-pill">✓ Verified</span>
+              </div>
+            </div>
+
+            <!-- Duplicated Set for Smooth Continuous Infinite Scroll Loop -->
+            <!-- Review 1 Dup -->
+            <div class="marquee-review-card" aria-hidden="true">
+              <div class="marquee-card-top">
+                <div class="marquee-stars">★★★★★</div>
+                <span class="marquee-slot-tag">BLUSH</span>
+              </div>
+              <h4 class="marquee-card-title">Pure Sunlit Elegance</h4>
+              <p class="marquee-card-body">
+                "The jasmine sambac in Blush smells like a fresh royal Mediterranean morning. The fragrance lingers on cashmere for days."
+              </p>
+              <div class="marquee-card-footer">
+                <div class="marquee-author-box">
+                  <div class="marquee-avatar">ER</div>
+                  <div class="marquee-author-meta">
+                    <span class="marquee-author-name">Elena R.</span>
+                    <span class="marquee-author-loc">Florence, Italy</span>
+                  </div>
+                </div>
+                <span class="marquee-verified-pill">✓ Verified</span>
+              </div>
+            </div>
+
+            <!-- Review 2 Dup -->
+            <div class="marquee-review-card" aria-hidden="true">
+              <div class="marquee-card-top">
+                <div class="marquee-stars">★★★★★</div>
+                <span class="marquee-slot-tag" style="background: rgba(183, 44, 28, 0.12); color: #b72c1c; border-color: rgba(183, 44, 28, 0.3);">ROSÉ WOMAN</span>
+              </div>
+              <h4 class="marquee-card-title">A Velvet Rose Masterpiece</h4>
+              <p class="marquee-card-body">
+                "Rosé Woman is breathtaking. Velvety Damask petals and juicy wild berries that turned heads all evening at the opera."
+              </p>
+              <div class="marquee-card-footer">
+                <div class="marquee-author-box">
+                  <div class="marquee-avatar" style="background:#fce7e7; color:#b72c1c;">JB</div>
+                  <div class="marquee-author-meta">
+                    <span class="marquee-author-name">Julian B.</span>
+                    <span class="marquee-author-loc">Paris, France</span>
+                  </div>
+                </div>
+                <span class="marquee-verified-pill">✓ Verified</span>
+              </div>
+            </div>
+
+            <!-- Review 3 Dup -->
+            <div class="marquee-review-card" aria-hidden="true">
+              <div class="marquee-card-top">
+                <div class="marquee-stars">★★★★★</div>
+                <span class="marquee-slot-tag" style="background: rgba(45, 55, 72, 0.12); color: #2d3748; border-color: rgba(45, 55, 72, 0.3);">WHITE OUD</span>
+              </div>
+              <h4 class="marquee-card-title">Majestic & Crystalline</h4>
+              <p class="marquee-card-body">
+                "White Oud is regal. Clean agarwood without any harshness. Projects sovereign distinction for over 14 hours."
+              </p>
+              <div class="marquee-card-footer">
+                <div class="marquee-author-box">
+                  <div class="marquee-avatar" style="background:#e2e8f0; color:#2d3748;">MT</div>
+                  <div class="marquee-author-meta">
+                    <span class="marquee-author-name">Marcus T.</span>
+                    <span class="marquee-author-loc">Dubai, UAE</span>
+                  </div>
+                </div>
+                <span class="marquee-verified-pill">✓ Verified</span>
+              </div>
+            </div>
+
+            <!-- Review 4 Dup -->
+            <div class="marquee-review-card" aria-hidden="true">
+              <div class="marquee-card-top">
+                <div class="marquee-stars">★★★★★</div>
+                <span class="marquee-slot-tag" style="background: rgba(180, 83, 9, 0.12); color: #b45309; border-color: rgba(180, 83, 9, 0.3);">HONEY OUD</span>
+              </div>
+              <h4 class="marquee-card-title">Liquid Golden Hypnosis</h4>
+              <p class="marquee-card-body">
+                "Honey Oud has that hypnotic golden warmth. The dry-down into bourbon vanilla and smoky oud is divine decadence."
+              </p>
+              <div class="marquee-card-footer">
+                <div class="marquee-author-box">
+                  <div class="marquee-avatar" style="background:#fef3c7; color:#b45309;">CW</div>
+                  <div class="marquee-author-meta">
+                    <span class="marquee-author-name">Charlotte W.</span>
+                    <span class="marquee-author-loc">London, UK</span>
+                  </div>
+                </div>
+                <span class="marquee-verified-pill">✓ Verified</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= MODALS & DRAWERS ================= -->
+
+  <!-- 1. Off-Canvas Boutique Menu Drawer -->
+  <div class="drawer-backdrop" id="menu-drawer-backdrop">
+    <div class="side-drawer" id="menu-drawer">
+      <div class="drawer-header">
+        <div class="drawer-brand">⚜ MAISON ROYALE BELLAVITA ⚜</div>
+        <button class="close-drawer-btn" id="btn-close-menu" aria-label="Close menu">&times;</button>
+      </div>
+      <div class="drawer-body">
+        <div class="drawer-section">
+          <div class="drawer-section-title">⚜ THE SIGNATURE ROYAL COLLECTION</div>
+          <ul class="drawer-nav-list">
+            <li><button class="drawer-nav-btn active-item" data-action="select-product" data-product="blush">Bellavita Blush <span class="tag-badge">👑 ÉDITION ROYALE</span></button></li>
+            <li><button class="drawer-nav-btn" data-action="select-product" data-product="rose">Bellavita Rosé Woman <span class="tag-badge" style="background:#b72c1c; color:#fff;">👑 50% OFF</span></button></li>
+            <li><button class="drawer-nav-btn" data-action="select-product" data-product="white_oud">Bellavita White Oud <span class="tag-badge" style="background:#2d3748; color:#fff;">👑 NOBLE OUD</span></button></li>
+            <li><button class="drawer-nav-btn" data-action="select-product" data-product="honey_oud">Bellavita Honey Oud <span class="tag-badge" style="background:#b45309; color:#fff;">👑 GOLDEN NECTAR</span></button></li>
+          </ul>
+        </div>
+        <div class="drawer-section">
+          <div class="drawer-section-title">⚜ BESPOKE ROYAL SERVICES</div>
+          <ul class="drawer-nav-list">
+            <li><button class="drawer-nav-btn" id="menu-open-concierge">Royal Olfactory Consultation</button></li>
+            <li><button class="drawer-nav-btn" id="menu-open-engraving">Diamond-Tip Crown Engraving</button></li>
+            <li><button class="drawer-nav-btn" id="menu-open-gallery">Imperial Campaign Gallery</button></li>
+          </ul>
+        </div>
+        <div class="drawer-footer-highlight">
+          <p>By Royal Appointment: Each flacon is crafted with thick heavy-bottom crystalline glass, crowned with 24K gold metallic finishes and filled with sustainably harvested pure botanical extracts.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Collection Showcase Modal -->
+  <div class="modal-backdrop" id="collection-modal-backdrop">
+    <div class="luxury-modal collection-modal" id="collection-modal">
+      <button class="close-modal-btn" id="btn-close-collection">&times;</button>
+      <div class="modal-header">
+        <span class="modal-subtitle">⚜ ATELIER ROYAL BELLAVITA ⚜</span>
+        <h2 class="modal-title">THE IMPERIAL HAUTE PARFUMS</h2>
+        <p class="modal-desc">Explore mastercrafted flacons, each celebrating sovereign Mediterranean botanicals, imperial gold accents, and master perfumery.</p>
+      </div>
+      <div class="collection-grid">
+        <!-- Item 1: Bellavita Blush (Current) -->
+        <div class="collection-card featured" id="card-col-blush">
+          <div class="badge-featured">👑 ÉDITION ROYALE</div>
+          <div class="card-image-box">
+            <div class="crystal-glow-circle blush"></div>
+            <div class="bottle-silhouette blush"></div>
+          </div>
+          <div class="card-info">
+            <h3 class="card-title">Bellavita Blush</h3>
+            <span class="card-type">Eau de Parfum</span>
+            <p class="card-notes">Jasmine · Italian Mandarin · Peach · Amber</p>
+            <div class="card-bottom">
+              <span class="card-price">$75 <small>/ 100ml</small></span>
+              <button class="card-cta-btn" data-buy="blush">SELECT</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 2: Bellavita Rosé Woman (50% Off) -->
+        <div class="collection-card" id="card-col-rose">
+          <div class="badge-featured" style="background:#e8505b;">50% OFF SPECIAL</div>
+          <div class="card-image-box">
+            <div class="crystal-glow-circle deep-rose"></div>
+            <div class="bottle-silhouette rose-thumb"></div>
+          </div>
+          <div class="card-info">
+            <h3 class="card-title">Bellavita Rosé Woman</h3>
+            <span class="card-type">Eau de Parfum · 20ml / 0.68 fl. oz.</span>
+            <p class="card-notes">Damask Rose · Wild Strawberry · Pink Pepper · Amber</p>
+            <div class="card-bottom">
+              <span class="card-price">$19 <small style="text-decoration:line-through; color:#a08d85;">$38</small> <small>/ 20ml</small></span>
+              <button class="card-cta-btn" data-buy="rose" id="btn-col-select-rose">SELECT</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 3: Bellavita White Oud -->
+        <div class="collection-card" id="card-col-white-oud">
+          <div class="card-image-box">
+            <div class="crystal-glow-circle white-oud"></div>
+            <div class="bottle-silhouette white-oud"></div>
+          </div>
+          <div class="card-info">
+            <h3 class="card-title">Bellavita White Oud</h3>
+            <span class="card-type">Eau de Parfum · 100ml / 3.4 fl. oz.</span>
+            <p class="card-notes">Noble Agarwood · White Orchid · Amber Resin · Mandarin</p>
+            <div class="card-bottom">
+              <span class="card-price">$85 <small>/ 100ml</small></span>
+              <button class="card-cta-btn" data-buy="white_oud" id="btn-col-select-white-oud">SELECT</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 4: Bellavita Honey Oud -->
+        <div class="collection-card" id="card-col-honey-oud">
+          <div class="card-image-box">
+            <div class="crystal-glow-circle honey-oud"></div>
+            <div class="bottle-silhouette honey-oud"></div>
+          </div>
+          <div class="card-info">
+            <h3 class="card-title">Bellavita Honey Oud</h3>
+            <span class="card-type">Luxury Eau de Parfum · 100ml / 3.38 fl. oz.</span>
+            <p class="card-notes">Wild Honey · Cambodian Oud · Golden Amber · Vanilla</p>
+            <div class="card-bottom">
+              <span class="card-price">$80 <small>/ 100ml</small></span>
+              <button class="card-cta-btn" data-buy="honey_oud" id="btn-col-select-honey-oud">SELECT</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. About The Maison Modal -->
+  <div class="modal-backdrop" id="about-modal-backdrop">
+    <div class="luxury-modal about-modal" id="about-modal">
+      <button class="close-modal-btn" id="btn-close-about">&times;</button>
+      <div class="about-hero-banner">
+        <span class="modal-subtitle">⚜ MAISON ROYALE BELLAVITA ⚜</span>
+        <h2 class="modal-title">THE BOTANICAL ART & ROYAL PATRONAGE</h2>
+      </div>
+      <div class="about-grid">
+        <div class="about-col">
+          <h4 class="col-headline">The Floral Inspiration</h4>
+          <p>Bellavita Blush was born from the breathtaking sight of early morning jasmine flowers blooming under the warm Italian sun. As soft breezes flutter across garden terraces, the white petals release their purest, most intoxicating aroma.</p>
+          <div class="quote-block">
+            <p>“We envisioned a fragrance alive with sunlight and gentle winds — timeless in poise, but constantly dancing with nature.”</p>
+            <span>— Atelier Bellavita Master Nose</span>
+          </div>
+        </div>
+        <div class="about-col">
+          <h4 class="col-headline">Flacon Architecture</h4>
+          <p>Crafted from optical-grade heavy glass, the rectangular silhouette features crisp beveled borders, highlighting the glowing blush nectar inside. Capped with an architectural cylindrical chrome crown that catches ambient sunbeams from every angle.</p>
+          <div class="spec-list">
+            <div class="spec-item">
+              <span class="spec-label">Fragrance Classification</span>
+              <span class="spec-val">Luminous Floral-Fruity Amber</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Distillation Process</span>
+              <span class="spec-val">Cold Solvent Botanical Extraction</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">Flacon Glass</span>
+              <span class="spec-val">Double-Annealed Heavy Crystal</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Concierge Consultation Modal -->
+  <div class="modal-backdrop" id="contact-modal-backdrop">
+    <div class="luxury-modal contact-modal" id="contact-modal">
+      <button class="close-modal-btn" id="btn-close-contact">&times;</button>
+      <div class="modal-header">
+        <span class="modal-subtitle">⚜ HAUTE PARFUMERIE SERVICE ⚜</span>
+        <h2 class="modal-title">BELLAVITA ROYAL SCENT CONCIERGE</h2>
+        <p class="modal-desc">Connect with our master scent stylists for personal fragrance layering advice, imperial celebration curations, or custom 24K gold-engraved gifts.</p>
+      </div>
+      <form class="contact-form" id="concierge-form" onsubmit="return false;">
+        <div class="form-row">
+          <div class="form-group">
+            <label>FULL NAME</label>
+            <input type="text" id="contact-name" placeholder="Lady / Lord / Signora" required value="Genevieve Duprès">
+          </div>
+          <div class="form-group">
+            <label>EMAIL ADDRESS</label>
+            <input type="email" id="contact-email" placeholder="client@luxury.com" required value="genevieve.d@parfum.com">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>INQUIRY TYPE</label>
+          <select id="contact-type">
+            <option>Bespoke Olfactory Profile & Layering</option>
+            <option>Custom Bottle Engraving & Monogram</option>
+            <option>VIP Gift Box Curation</option>
+            <option>Private Boutique Scent Bar Appointment</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>SCENT PREFERENCES OR MESSAGE</label>
+          <textarea id="contact-message" rows="3" placeholder="Tell us about your favorite accords or special occasion...">I love the fresh white jasmine and mandarin opening of Bellavita Blush. Would love recommendations on matching bath oils and evening layering.</textarea>
+        </div>
+        <button type="submit" class="submit-btn" id="btn-submit-concierge">REQUEST ATELIER CONSULTATION</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 5. Campaign Visual Gallery Modal -->
+  <div class="modal-backdrop" id="gallery-modal-backdrop">
+    <div class="luxury-modal gallery-modal" id="gallery-modal">
+      <button class="close-modal-btn" id="btn-close-gallery">&times;</button>
+      <div class="modal-header">
+        <span class="modal-subtitle">⚜ CINEMATIC ROYAL CAMPAIGN ⚜</span>
+        <h2 class="modal-title">THE LIVING FLORAL SANCTUARY</h2>
+      </div>
+      <div class="gallery-showcase">
+        <div class="gallery-item large">
+          <div class="gallery-inner bellavita-main">
+            <div class="gallery-title-overlay">Sun-Drenched Garden Pavilion</div>
+            <span class="gallery-meta">Living 300-Frame Cinemagraph Capture</span>
+          </div>
+        </div>
+        <div class="gallery-item">
+          <div class="gallery-inner flacon-zoom">
+            <div class="gallery-title-overlay">Polished Metallic Crown</div>
+            <span class="gallery-meta">Optical Glass & Chrome Details</span>
+          </div>
+        </div>
+        <div class="gallery-item">
+          <div class="gallery-inner flower-zoom">
+            <div class="gallery-title-overlay">Jasmine & Mock Orange Petals</div>
+            <span class="gallery-meta">Swaying In The Sunlight</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. Olfactory Notes Interactive Detail Modal -->
+  <div class="modal-backdrop" id="note-modal-backdrop">
+    <div class="luxury-modal note-modal" id="note-modal">
+      <button class="close-modal-btn" id="btn-close-note">&times;</button>
+      <div class="note-modal-header">
+        <span class="note-tier-badge" id="modal-note-tier">HEART NOTE</span>
+        <h2 class="note-modal-name" id="modal-note-name">Jasmine Sambac</h2>
+      </div>
+      <div class="note-modal-body">
+        <div class="note-desc-col">
+          <p id="modal-note-desc">Hand-picked at dawn in southern Italy. Star-shaped white petals that unfurl with creamy floral intoxication and crystalline purity.</p>
+          <div class="note-attributes">
+            <div class="attr-row">
+              <span class="attr-label">Sillage Radiance</span>
+              <div class="attr-track"><div class="attr-fill" id="bar-radiance" style="width: 96%"></div></div>
+              <span class="attr-val" id="note-radiance-val">96%</span>
+            </div>
+            <div class="attr-row">
+              <span class="attr-label">Skin Longevity</span>
+              <div class="attr-track"><div class="attr-fill" id="bar-longevity" style="width: 90%"></div></div>
+              <span class="attr-val" id="note-longevity-val">8 - 10 Hours</span>
+            </div>
+          </div>
+        </div>
+        <div class="note-pyramid-col">
+          <div class="pyramid-label">FRAGRANCE PYRAMID POSITION</div>
+          <div class="pyramid-visual">
+            <div class="pyramid-step top" id="pyr-top">
+              <span>TOP NOTES</span>
+              <small>Mandarin · Dewy Peach</small>
+            </div>
+            <div class="pyramid-step heart" id="pyr-heart">
+              <span>HEART NOTES</span>
+              <small>Jasmine Sambac · Blush Peony</small>
+            </div>
+            <div class="pyramid-step base" id="pyr-base">
+              <span>BASE NOTES</span>
+              <small>Golden Amber · Sheer Musk</small>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="note-modal-footer">
+        <button class="shop-note-perfume-btn" id="btn-note-shop">EXPERIENCE THIS ACCORD IN BELLAVITA BLUSH</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. Quick Purchase & Engraving Modal -->
+  <div class="modal-backdrop" id="shop-modal-backdrop">
+    <div class="luxury-modal shop-modal" id="shop-modal">
+      <button class="close-modal-btn" id="btn-close-shop">&times;</button>
+      <div class="shop-modal-grid">
+        <div class="shop-media-col">
+          <div class="bottle-render-wrap">
+            <div class="glow-aura"></div>
+            <div class="flacon-3d-graphic blush" id="shop-bottle-preview"></div>
+          </div>
+          <div class="authenticity-guarantee">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            <span>⚜ Purveyor to Haute Parfumerie · Guaranteed Authentic Maison Bellavita Luxury</span>
+          </div>
+        </div>
+        <div class="shop-details-col">
+          <span class="modal-subtitle">⚜ ÉDITION ROYALE · HAUTE PARFUMERIE ⚜</span>
+          <h2 class="modal-title" id="shop-modal-title">BELLAVITA BLUSH</h2>
+          <div class="rating-row">
+            <span class="stars">★★★★★</span>
+            <span class="rating-text">4.9 / 5 (3,120 verified connoisseurs)</span>
+          </div>
+          <p class="modal-desc" id="shop-modal-desc">
+            Heavy optical crystal flacon adorned with a polished metallic crown. Infused with living white jasmine blossoms, Italian citrus, and warm sunlit amber.
+          </p>
+
+          <!-- Size Selector Buttons -->
+          <div class="size-selector-area">
+            <div class="selector-title">SELECT FLACON VOLUME:</div>
+            <div class="size-buttons-grid">
+              <button class="size-btn" data-size="20ml" data-price="24">
+                <span class="vol">20 ml</span>
+                <span class="oz">Pocket Spray</span>
+                <span class="prc">$24</span>
+              </button>
+              <button class="size-btn" data-size="50ml" data-price="48">
+                <span class="vol">50 ml</span>
+                <span class="oz">1.7 fl. oz.</span>
+                <span class="prc">$48</span>
+              </button>
+              <button class="size-btn selected" data-size="100ml" data-price="75">
+                <span class="popular-ribbon">FEATURED</span>
+                <span class="vol">100 ml</span>
+                <span class="oz">3.4 fl. oz.</span>
+                <span class="prc">$75</span>
+              </button>
+              <button class="size-btn" data-size="giftset" data-price="95">
+                <span class="vol">Coffret</span>
+                <span class="oz">100ml + 20ml</span>
+                <span class="prc">$95</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Free Luxury Engraving Toggle -->
+          <div class="engraving-box">
+            <label class="checkbox-label">
+              <input type="checkbox" id="check-engraving">
+              <span class="custom-check"></span>
+              <span class="engraving-text">Add Complimentary Diamond-Tip Flacon Engraving</span>
+            </label>
+            <input type="text" id="engraving-input" class="engraving-field hidden" placeholder="Enter initials or name (e.g., GENEVIEVE)" maxlength="12">
+          </div>
+
+          <!-- Add to Bag Area -->
+          <div class="shop-action-box">
+            <div class="price-display">
+              <span class="total-label">Subtotal:</span>
+              <span class="total-amount" id="modal-price-display">$75.00</span>
+            </div>
+            <button class="primary-buy-btn" id="btn-add-to-bag">
+              <span>ADD TO LUXURY BAG</span>
+              <span class="btn-arrow">→</span>
+            </button>
+          </div>
+          <div class="perks-row">
+            <span>✨ 2 Complimentary Botanical Discovery Vials</span>
+            <span>🎁 Signature Gold-Embossed Gift Box</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. Search Overlay -->
+  <div class="modal-backdrop" id="search-modal-backdrop">
+    <div class="luxury-modal search-modal" id="search-modal">
+      <button class="close-modal-btn" id="btn-close-search">&times;</button>
+      <div class="search-input-wrap">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="search-field" placeholder="Search botanical notes, flacon sizes, or accords (e.g. Jasmine, 100ml, Amber)...">
+      </div>
+      <div class="search-suggestions">
+        <span class="suggestions-label">CURATED DISCOVERIES:</span>
+        <div class="suggestion-tags">
+          <button class="sug-tag" data-query="Jasmine">Jasmine Sambac</button>
+          <button class="sug-tag" data-query="Mandarin">Italian Mandarin</button>
+          <button class="sug-tag" data-query="Peach">Dewy Peach</button>
+          <button class="sug-tag" data-query="Amber">Golden Amber</button>
+          <button class="sug-tag" data-query="100ml">100ml Flacon</button>
+        </div>
+      </div>
+      <div class="search-results-list" id="search-results">
+        <!-- Dynamic search results -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 9. Wishlist Drawer -->
+  <div class="drawer-backdrop" id="wishlist-drawer-backdrop">
+    <div class="side-drawer" id="wishlist-drawer">
+      <div class="drawer-header">
+        <div class="drawer-brand">SAVED CREATIONS (<span id="wishlist-count-header">1</span>)</div>
+        <button class="close-drawer-btn" id="btn-close-wishlist">&times;</button>
+      </div>
+      <div class="drawer-body">
+        <div class="wishlist-item" id="wishlist-item-main">
+          <div class="cart-item-img blush"></div>
+          <div class="cart-item-details">
+            <h4 class="cart-item-name">Bellavita Blush</h4>
+            <span class="cart-item-size">Eau de Parfum · 100 ml</span>
+            <span class="cart-item-price">$75.00</span>
+            <button class="move-to-bag-btn" id="btn-wishlist-move">MOVE TO SHOPPING BAG</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 10. Shopping Bag / Cart Drawer -->
+  <div class="drawer-backdrop" id="cart-drawer-backdrop">
+    <div class="side-drawer" id="cart-drawer">
+      <div class="drawer-header">
+        <div class="drawer-brand">LUXURY BAG (<span id="cart-count-header">1</span>)</div>
+        <button class="close-drawer-btn" id="btn-close-cart">&times;</button>
+      </div>
+      <div class="drawer-body">
+        <div class="cart-items-container" id="cart-items-list">
+          <div class="cart-item">
+            <div class="cart-item-img blush"></div>
+            <div class="cart-item-details">
+              <div class="cart-item-top">
+                <h4 class="cart-item-name">Bellavita Blush</h4>
+                <button class="remove-cart-item" title="Remove">&times;</button>
+              </div>
+              <span class="cart-item-size" id="cart-item-size-label">Eau de Parfum · 100 ml</span>
+              <div class="cart-item-controls">
+                <div class="quantity-stepper">
+                  <button class="qty-btn minus" id="btn-qty-minus">−</button>
+                  <span class="qty-val" id="cart-qty-val">1</span>
+                  <button class="qty-btn plus" id="btn-qty-plus">+</button>
+                </div>
+                <span class="cart-item-price" id="cart-item-price-val">$75.00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cart-gift-option">
+          <label class="checkbox-label">
+            <input type="checkbox" checked id="check-gift-box">
+            <span class="custom-check"></span>
+            <span class="gift-text">Signature Gold-Foil Gift Coffret (Complimentary)</span>
+          </label>
+        </div>
+
+        <div class="cart-summary-box">
+          <div class="summary-line">
+            <span>Subtotal</span>
+            <span id="cart-subtotal">$75.00</span>
+          </div>
+          <div class="summary-line">
+            <span>VIP Courier Shipping</span>
+            <span class="free-text">COMPLIMENTARY</span>
+          </div>
+          <div class="summary-line total">
+            <span>Total</span>
+            <span id="cart-total">$75.00</span>
+          </div>
+          <button class="checkout-btn" id="btn-checkout">
+            <span>PROCEED TO CHECKOUT</span>
+            <span>→</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 11. Write a Royal Review Modal -->
+  <div class="modal-backdrop" id="review-modal-backdrop">
+    <div class="luxury-modal review-modal" id="review-modal">
+      <button class="close-modal-btn" id="btn-close-review-modal">&times;</button>
+      <div class="modal-header">
+        <span class="modal-subtitle">⚜ MAISON ROYALE PATRON REVIEW ⚜</span>
+        <h2 class="modal-title">SHARE YOUR SCENT STORY</h2>
+        <p class="modal-desc">Your impressions inspire and guide fragrance connoisseurs around the world.</p>
+      </div>
+
+      <form id="royal-review-form" class="royal-review-form">
+        <div class="review-form-group">
+          <label class="review-form-label" for="review-slot-select">SELECT FRAGRANCE CREATION</label>
+          <select id="review-slot-select" class="review-form-select" required>
+            <option value="blush">Bellavita Blush (Eau de Parfum)</option>
+            <option value="rose">Bellavita Rosé Woman (20ml / 50% Off)</option>
+            <option value="white_oud">Bellavita White Oud (Noble Agarwood)</option>
+            <option value="honey_oud">Bellavita Honey Oud (Wild Honey & Oud)</option>
+          </select>
+        </div>
+
+        <div class="review-form-group">
+          <label class="review-form-label">ROYAL STAR RATING</label>
+          <div class="star-rating-picker" id="review-star-picker" role="radiogroup" aria-label="Rating out of 5 stars">
+            <span data-rating="1" class="active">★</span>
+            <span data-rating="2" class="active">★</span>
+            <span data-rating="3" class="active">★</span>
+            <span data-rating="4" class="active">★</span>
+            <span data-rating="5" class="active">★</span>
+          </div>
+          <div class="rating-text-feedback" id="rating-text-feedback">5.0 / 5.0 · Sovereign Excellence</div>
+          <input type="hidden" id="review-rating-value" value="5">
+        </div>
+
+        <div class="review-form-group">
+          <label class="review-form-label" for="review-author-name">YOUR NAME</label>
+          <input type="text" id="review-author-name" class="review-form-input" placeholder="e.g. Lady Genevieve M." required>
+        </div>
+
+        <div class="review-form-group">
+          <label class="review-form-label" for="review-author-location">LOCATION / CITY</label>
+          <input type="text" id="review-author-location" class="review-form-input" placeholder="e.g. Monaco, Monte Carlo">
+        </div>
+
+        <div class="review-form-group">
+          <label class="review-form-label" for="review-headline">REVIEW HEADLINE</label>
+          <input type="text" id="review-headline" class="review-form-input" placeholder="e.g. Pure royalty in every drop" required>
+        </div>
+
+        <div class="review-form-group">
+          <label class="review-form-label" for="review-body">YOUR OLFACTORY EXPERIENCE</label>
+          <textarea id="review-body" class="review-form-textarea" rows="3" placeholder="Describe the opening accords, sillage, longevity, or how wearing it makes you feel..." required></textarea>
+        </div>
+
+        <button type="submit" class="checkout-btn" style="margin-top: 1rem;">
+          <span>PUBLISH ROYAL REVIEW</span>
+          <span>👑</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 12. Luxury Toast Notification Container -->
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  <!-- Main Application Script -->
+  <script src="script.js?v=2.0"></script>
+</body>
+</html>
