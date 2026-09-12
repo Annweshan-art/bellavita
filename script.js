@@ -503,6 +503,7 @@
     { id: 'discovery_set', size: '4x10ml', price: 65 }
   ];
   let activeWishlistFilter = 'all';
+  let activeQuickWishFilter = 'all';
 
   let selectedSize = '100ml';
   let selectedPrice = 75;
@@ -1342,16 +1343,125 @@
     });
 
     // Escape key close
+    function closeAllDropdowns() {
+      document.querySelectorAll('.nav-menu-wrapper, .nav-dropdown-wrapper').forEach(w => w.classList.remove('open'));
+    }
+
+    function closeAllOverlays() {
+      modalBackdrops.forEach(el => el.classList.remove('open'));
+      closeAllDropdowns();
+    }
+
+    // Escape key close
     window.addEventListener('keydown', e => {
-      if (e.key === 'Escape') closeAllOverlays();
+      if (e.key === 'Escape') {
+        closeAllOverlays();
+        closeAllDropdowns();
+      }
     });
 
-    // Nav Links: Collections
+    // Close dropdowns on outside click
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.nav-menu-wrapper') &&
+          !e.target.closest('#nav-wishlist-wrapper') &&
+          !e.target.closest('#nav-cart-wrapper')) {
+        closeAllDropdowns();
+      }
+    });
+
+    // Master Collection Modal Opener with Category Filtering
+    function openCollectionModal(category = 'all') {
+      closeAllOverlays();
+      closeAllDropdowns();
+      const modalBackdrop = document.getElementById('collection-modal-backdrop');
+      if (!modalBackdrop) return;
+      modalBackdrop.classList.add('open');
+
+      // Update active filter pill
+      document.querySelectorAll('.collection-filter-pill').forEach(pill => {
+        pill.classList.toggle('active', pill.getAttribute('data-col-filter') === category);
+      });
+
+      // Filter collection cards
+      const cards = document.querySelectorAll('#collection-items-grid .collection-card');
+      cards.forEach(card => {
+        if (category === 'all') {
+          card.style.display = 'flex';
+        } else {
+          const cardCat = card.getAttribute('data-category');
+          card.style.display = (cardCat === category) ? 'flex' : 'none';
+        }
+      });
+
+      const titleMap = {
+        all: 'THE IMPERIAL ATELIER CATALOG',
+        fragrance: 'HAUTE PARFUMERIE COLLECTION',
+        skincare: 'HAUTE BOTANICAL SKINCARE ELIXIRS',
+        gift: 'ROYAL PRESENTATION COFFRETS & GIFTS'
+      };
+      const titleEl = document.getElementById('collection-modal-title');
+      if (titleEl && titleMap[category]) {
+        titleEl.textContent = titleMap[category];
+      }
+    }
+
+    // Nav Links: Collections, Skincare, Gifts
     const navCollection = document.getElementById('nav-collection');
     if (navCollection) {
-      navCollection.addEventListener('click', () => {
-        closeAllOverlays();
-        document.getElementById('collection-modal-backdrop').classList.add('open');
+      navCollection.addEventListener('click', () => openCollectionModal('all'));
+    }
+
+    const navSkincare = document.getElementById('nav-skincare');
+    if (navSkincare) {
+      navSkincare.addEventListener('click', () => openCollectionModal('skincare'));
+    }
+
+    const navGifts = document.getElementById('nav-gifts');
+    if (navGifts) {
+      navGifts.addEventListener('click', () => openCollectionModal('gift'));
+    }
+
+    // Collection Modal Filter Pills
+    document.querySelectorAll('.collection-filter-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        const cat = pill.getAttribute('data-col-filter') || 'all';
+        openCollectionModal(cat);
+      });
+    });
+
+    // Collection Modal Quick Add to Bag buttons
+    document.querySelectorAll('#collection-items-grid [data-action="quick-add-bag"]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.getAttribute('data-id');
+        if (id) addToCart(id, null, null, true);
+      });
+    });
+
+    // Hero Department Tabs (Haute Parfums, Botanical Skincare, Royal Gifts)
+    const deptParfums = document.getElementById('dept-btn-parfums');
+    const deptSkincare = document.getElementById('dept-btn-skincare');
+    const deptGifts = document.getElementById('dept-btn-gifts');
+
+    if (deptParfums) {
+      deptParfums.addEventListener('click', () => {
+        document.querySelectorAll('.dept-tab-btn').forEach(b => b.classList.remove('active'));
+        deptParfums.classList.add('active');
+        openCollectionModal('fragrance');
+      });
+    }
+    if (deptSkincare) {
+      deptSkincare.addEventListener('click', () => {
+        document.querySelectorAll('.dept-tab-btn').forEach(b => b.classList.remove('active'));
+        deptSkincare.classList.add('active');
+        openCollectionModal('skincare');
+      });
+    }
+    if (deptGifts) {
+      deptGifts.addEventListener('click', () => {
+        document.querySelectorAll('.dept-tab-btn').forEach(b => b.classList.remove('active'));
+        deptGifts.classList.add('active');
+        openCollectionModal('gift');
       });
     }
 
@@ -1382,10 +1492,49 @@
       });
     }
 
-    // Menu Drawer Toggle
+    // Menu Drawer Toggle & Menu Quick Dropdown
     const btnMenu = document.getElementById('btn-menu');
+    const navMenuWrapper = document.getElementById('nav-menu-wrapper');
     if (btnMenu) {
-      btnMenu.addEventListener('click', () => {
+      btnMenu.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (window.innerWidth <= 768) {
+          closeAllOverlays();
+          document.getElementById('menu-drawer-backdrop').classList.add('open');
+        } else {
+          if (navMenuWrapper) {
+            const isOpen = navMenuWrapper.classList.contains('open');
+            closeAllDropdowns();
+            if (!isOpen) navMenuWrapper.classList.add('open');
+          }
+        }
+      });
+    }
+
+    // Menu Quick Dropdown Item Clicks
+    document.querySelectorAll('.menu-dropdown-item').forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeAllDropdowns();
+        const target = item.getAttribute('data-menu-target');
+        if (target === 'parfums') {
+          openCollectionModal('fragrance');
+        } else if (target === 'skincare') {
+          openCollectionModal('skincare');
+        } else if (target === 'gifts') {
+          openCollectionModal('gift');
+        } else if (target === 'concierge') {
+          closeAllOverlays();
+          document.getElementById('contact-modal-backdrop').classList.add('open');
+        }
+      });
+    });
+
+    const btnOpenFullMenu = document.getElementById('btn-open-full-menu');
+    if (btnOpenFullMenu) {
+      btnOpenFullMenu.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeAllDropdowns();
         closeAllOverlays();
         document.getElementById('menu-drawer-backdrop').classList.add('open');
       });
@@ -1433,19 +1582,59 @@
       });
     }
 
-    // Wishlist Drawer Toggle
+    // Wishlist Drawer Toggle & Quick Dropdown
     const btnWishlist = document.getElementById('btn-wishlist');
+    const navWishWrapper = document.getElementById('nav-wishlist-wrapper');
     if (btnWishlist) {
-      btnWishlist.addEventListener('click', () => {
+      btnWishlist.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (window.innerWidth <= 768) {
+          closeAllOverlays();
+          document.getElementById('wishlist-drawer-backdrop').classList.add('open');
+        } else {
+          if (navWishWrapper) {
+            const isOpen = navWishWrapper.classList.contains('open');
+            closeAllDropdowns();
+            if (!isOpen) navWishWrapper.classList.add('open');
+          }
+        }
+      });
+    }
+
+    const btnOpenFullWishlist = document.getElementById('btn-open-full-wishlist');
+    if (btnOpenFullWishlist) {
+      btnOpenFullWishlist.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeAllDropdowns();
         closeAllOverlays();
         document.getElementById('wishlist-drawer-backdrop').classList.add('open');
       });
     }
 
-    // Cart Drawer Toggle
+    // Cart Drawer Toggle & Quick Dropdown
     const btnCart = document.getElementById('btn-cart');
+    const navCartWrapper = document.getElementById('nav-cart-wrapper');
     if (btnCart) {
-      btnCart.addEventListener('click', () => {
+      btnCart.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (window.innerWidth <= 768) {
+          closeAllOverlays();
+          document.getElementById('cart-drawer-backdrop').classList.add('open');
+        } else {
+          if (navCartWrapper) {
+            const isOpen = navCartWrapper.classList.contains('open');
+            closeAllDropdowns();
+            if (!isOpen) navCartWrapper.classList.add('open');
+          }
+        }
+      });
+    }
+
+    const btnOpenFullCart = document.getElementById('btn-open-full-cart');
+    if (btnOpenFullCart) {
+      btnOpenFullCart.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeAllDropdowns();
         closeAllOverlays();
         document.getElementById('cart-drawer-backdrop').classList.add('open');
       });
@@ -1903,6 +2092,11 @@
       const container = document.getElementById('cart-items-list');
       const upsellContainer = document.getElementById('cart-upsell-shelf');
 
+      // Top-right quick dropdown elements
+      const quickBadge = document.getElementById('quick-cart-badge-count');
+      const quickSubtotal = document.getElementById('quick-cart-subtotal');
+      const quickList = document.getElementById('quick-cart-list');
+
       const totalQty = cartItems.reduce((acc, item) => acc + item.qty, 0);
       const subtotal = cartItems.reduce((acc, item) => acc + (item.price * item.qty), 0);
 
@@ -1910,6 +2104,48 @@
       if (headerCount) headerCount.textContent = totalQty;
       if (subtotalEl) subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
       if (totalEl) totalEl.textContent = `$${subtotal.toFixed(2)}`;
+
+      if (quickBadge) quickBadge.textContent = `${totalQty} ITEM${totalQty === 1 ? '' : 'S'}`;
+      if (quickSubtotal) quickSubtotal.textContent = `$${subtotal.toFixed(2)}`;
+
+      if (quickList) {
+        if (cartItems.length === 0) {
+          quickList.innerHTML = `
+            <div style="text-align:center; padding:1.2rem 0.5rem; color:#8c7e73; font-size:0.75rem; font-style:italic;">
+              Your bag is empty. Explore our botanical skincare & royal gifts below.
+            </div>
+          `;
+        } else {
+          quickList.innerHTML = cartItems.map(item => {
+            const prod = CATALOG[item.id] || PRODUCTS[item.id] || {
+              title: item.title || 'Luxury Creation',
+              category: 'fragrance',
+              badge: 'MAISON ROYALE',
+              img: 'frames/ezgif-frame-001.jpg'
+            };
+            const sizeLabel = item.size ? `${item.size.toUpperCase()}` : (prod.subtitle || '');
+            return `
+              <div class="quick-item-row">
+                <img src="${prod.img}" class="quick-item-thumb" alt="${prod.title}">
+                <div class="quick-item-info">
+                  <div class="quick-item-title">${prod.title}</div>
+                  <div class="quick-item-meta">${sizeLabel} · Qty: ${item.qty}</div>
+                </div>
+                <div class="quick-item-price">$${(item.price * item.qty).toFixed(2)}</div>
+              </div>
+            `;
+          }).join('');
+        }
+      }
+
+      // Bind quick add chips in cart dropdown
+      document.querySelectorAll('#cart-quick-dropdown [data-quickadd]').forEach(btn => {
+        btn.onclick = (e) => {
+          e.stopPropagation();
+          const id = btn.getAttribute('data-quickadd');
+          if (id) addToCart(id, null, null, false);
+        };
+      });
 
       if (container) {
         if (cartItems.length === 0) {
@@ -2018,6 +2254,11 @@
       const container = document.getElementById('wishlist-items-container');
       const recsGrid = document.getElementById('wishlist-recs-grid');
 
+      // Top-right quick dropdown elements
+      const quickWishBadge = document.getElementById('quick-wish-badge-count');
+      const quickWishTotal = document.getElementById('quick-wish-total-count');
+      const quickWishList = document.getElementById('quick-wish-list');
+
       // Update Filter counts
       const countAll = wishlistItems.length;
       let countFrag = 0;
@@ -2044,7 +2285,67 @@
       if (badge) badge.textContent = countAll;
       if (headerCount) headerCount.textContent = countAll;
 
-      // Filter
+      if (quickWishBadge) quickWishBadge.textContent = `${countAll} ITEM${countAll === 1 ? '' : 'S'}`;
+      if (quickWishTotal) quickWishTotal.textContent = countAll;
+
+      // Filter for Quick Dropdown
+      const quickDisplayed = activeQuickWishFilter === 'all'
+        ? wishlistItems
+        : wishlistItems.filter(item => {
+            const cat = (CATALOG[item.id] ? CATALOG[item.id].category : 'fragrance');
+            return cat === activeQuickWishFilter;
+          });
+
+      if (quickWishList) {
+        if (quickDisplayed.length === 0) {
+          quickWishList.innerHTML = `
+            <div style="text-align:center; padding:1.2rem 0.5rem; color:#8c7e73; font-size:0.75rem; font-style:italic;">
+              No saved creations in this category.
+            </div>
+          `;
+        } else {
+          quickWishList.innerHTML = quickDisplayed.map(item => {
+            const prod = CATALOG[item.id] || PRODUCTS[item.id] || {
+              title: item.title || 'Saved Creation',
+              category: 'fragrance',
+              badge: 'MAISON ROYALE',
+              img: 'frames/ezgif-frame-001.jpg',
+              price: item.price || 75
+            };
+            return `
+              <div class="quick-item-row">
+                <img src="${prod.img}" class="quick-item-thumb" alt="${prod.title}">
+                <div class="quick-item-info">
+                  <div class="quick-item-title">${prod.title}</div>
+                  <div class="quick-item-meta">${prod.badge || ''} · $${(item.price || prod.price).toFixed(2)}</div>
+                </div>
+                <button class="quick-item-add-btn" data-quick-move="${item.id}" title="Move to Luxury Bag">+ BAG</button>
+              </div>
+            `;
+          }).join('');
+
+          quickWishList.querySelectorAll('[data-quick-move]').forEach(btn => {
+            btn.onclick = (e) => {
+              e.stopPropagation();
+              const id = btn.getAttribute('data-quick-move');
+              moveWishlistToCart(id);
+            };
+          });
+        }
+      }
+
+      // Quick wishlist tab pills
+      document.querySelectorAll('#wishlist-quick-dropdown .quick-tab-pill').forEach(pill => {
+        pill.onclick = (e) => {
+          e.stopPropagation();
+          document.querySelectorAll('#wishlist-quick-dropdown .quick-tab-pill').forEach(p => p.classList.remove('active'));
+          pill.classList.add('active');
+          activeQuickWishFilter = pill.getAttribute('data-qfilter') || 'all';
+          renderWishlist();
+        };
+      });
+
+      // Filter for Full Drawer
       const displayed = activeWishlistFilter === 'all'
         ? wishlistItems
         : wishlistItems.filter(item => {

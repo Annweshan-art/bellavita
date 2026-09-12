@@ -16,7 +16,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,600&family=Montserrat:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="style.css?v=2.3">
+  <!-- Anti-cache headers for instant synchronization on GitHub Pages -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+
+  <link rel="stylesheet" href="style.css?v=3.5">
 </head>
 <body>
   <!-- 1. Ambient 300-Frame Cinemagraph Canvas (Static Bottle + Continuously Moving Flowers) -->
@@ -69,17 +74,70 @@
   <!-- 9. Top Navigation Header -->
   <header class="navbar" id="navbar">
     <div class="nav-left">
-      <!-- Hamburger Menu Button -->
-      <button class="nav-icon-btn menu-toggle-btn" id="btn-menu" aria-label="Open Boutique Menu" title="Menu">
-        <span class="hamburger-line"></span>
-        <span class="hamburger-line"></span>
-        <span class="hamburger-line"></span>
-      </button>
+      <!-- Hamburger Menu Button with Luxury Quick Dropdown -->
+      <div class="nav-menu-wrapper" id="nav-menu-wrapper">
+        <button class="nav-icon-btn menu-toggle-btn" id="btn-menu" aria-label="Open Boutique Menu" title="Menu (Click for Collections, Skincare, Gifts)">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
 
-      <!-- Primary Nav Links -->
+        <!-- Luxury Quick-Options Dropdown attached to Menu Button -->
+        <div class="menu-quick-dropdown" id="menu-quick-dropdown">
+          <div class="dropdown-arrow-up"></div>
+          <div class="quick-dropdown-header">
+            <span>⚜ MAISON BOUTIQUE</span>
+            <span class="quick-dropdown-badge">EXPLORE</span>
+          </div>
+          <div class="menu-dropdown-links">
+            <button class="menu-dropdown-item" data-menu-target="parfums">
+              <span class="item-icon">👑</span>
+              <div class="item-info">
+                <span class="item-title">Haute Parfums</span>
+                <span class="item-sub">Blush, Rosé Woman, White Oud, Honey Oud</span>
+              </div>
+              <span class="item-badge">4 SCENTS</span>
+            </button>
+            <button class="menu-dropdown-item" data-menu-target="skincare">
+              <span class="item-icon">✨</span>
+              <div class="item-info">
+                <span class="item-title">Botanical Skincare</span>
+                <span class="item-sub">24K Gold Elixir, Rose Dew Mist, Truffle Crème</span>
+              </div>
+              <span class="item-badge highlight">NEW</span>
+            </button>
+            <button class="menu-dropdown-item" data-menu-target="gifts">
+              <span class="item-icon">🎁</span>
+              <div class="item-info">
+                <span class="item-title">Royal Gifts & Coffrets</span>
+                <span class="item-sub">Discovery Sets, Emperor's Coffrets & Bougies</span>
+              </div>
+              <span class="item-badge royal">IMPERIAL</span>
+            </button>
+            <button class="menu-dropdown-item" data-menu-target="concierge">
+              <span class="item-icon">⚜</span>
+              <div class="item-info">
+                <span class="item-title">Atelier Concierge & Engraving</span>
+                <span class="item-sub">Bespoke Monogramming & Fragrance Layering</span>
+              </div>
+              <span class="item-badge">VIP</span>
+            </button>
+          </div>
+          <div class="menu-dropdown-footer">
+            <button class="open-full-drawer-btn" id="btn-open-full-menu">
+              <span>OPEN FULL ATELIER MENU VAULT</span>
+              <span>→</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Primary Nav Links with Visible Skincare & Gifts -->
       <nav class="nav-links">
         <button class="nav-link-btn active" id="nav-home">HOME</button>
         <button class="nav-link-btn" id="nav-collection">COLLECTIONS</button>
+        <button class="nav-link-btn" id="nav-skincare">SKINCARE <span class="nav-pill-badge">NEW</span></button>
+        <button class="nav-link-btn" id="nav-gifts">GIFTS <span class="nav-pill-badge royal">ROYAL</span></button>
         <button class="nav-link-btn" id="nav-about">THE MAISON</button>
       </nav>
     </div>
@@ -87,7 +145,7 @@
     <!-- Center Brand Logo -->
     <div class="nav-center">
       <button class="brand-logo-btn" id="nav-brand" aria-label="Bellavita Luxury Home">
-        <span class="royal-nav-crown-icon">👑</span>
+        <span class="royal-brand-crown">👑</span>
         <span class="brand-name">BELLAVITA</span>
         <span class="brand-sub">MAISON ROYALE · HAUTE PARFUMERIE</span>
       </button>
@@ -109,23 +167,79 @@
           </svg>
         </button>
 
-        <!-- Wishlist Button -->
-        <button class="nav-icon-btn" id="btn-wishlist" aria-label="View Saved Items" title="Wishlist">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-          </svg>
-          <span class="badge-count" id="wishlist-badge">1</span>
-        </button>
+        <!-- Wishlist Button with Interactive Dropdown -->
+        <div class="nav-dropdown-wrapper" id="nav-wishlist-wrapper">
+          <button class="nav-icon-btn" id="btn-wishlist" aria-label="View Saved Items" title="Wishlist (Saved Skincare, Perfumes & Gifts)">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
+            <span class="badge-count" id="wishlist-badge">3</span>
+          </button>
 
-        <!-- Shopping Bag Button -->
-        <button class="nav-icon-btn" id="btn-cart" aria-label="View Shopping Bag" title="Shopping Bag">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-            <line x1="3" y1="6" x2="21" y2="6"></line>
-            <path d="M16 10a4 4 0 0 1-8 0"></path>
-          </svg>
-          <span class="badge-count" id="cart-badge">1</span>
-        </button>
+          <div class="nav-dropdown-card" id="wishlist-quick-dropdown">
+            <div class="dropdown-arrow-up right-align"></div>
+            <div class="quick-dropdown-header">
+              <span>♡ SAVED CREATIONS</span>
+              <span class="quick-dropdown-badge" id="quick-wish-badge-count">3 ITEMS</span>
+            </div>
+            <div class="quick-dropdown-tabs">
+              <button class="quick-tab-pill active" data-qfilter="all">ALL</button>
+              <button class="quick-tab-pill" data-qfilter="fragrance">PARFUMS</button>
+              <button class="quick-tab-pill" data-qfilter="skincare">SKINCARE</button>
+              <button class="quick-tab-pill" data-qfilter="gift">GIFTS</button>
+            </div>
+            <div class="quick-dropdown-list" id="quick-wish-list">
+              <!-- Dynamically populated by script.js -->
+            </div>
+            <div class="quick-dropdown-footer">
+              <button class="quick-action-full-btn" id="btn-open-full-wishlist">
+                <span>VIEW COMPLETE WISHLIST (<span id="quick-wish-total-count">3</span>)</span>
+                <span>→</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Shopping Bag Button with Interactive Dropdown -->
+        <div class="nav-dropdown-wrapper" id="nav-cart-wrapper">
+          <button class="nav-icon-btn" id="btn-cart" aria-label="View Shopping Bag" title="Shopping Bag (Cart & Skincare/Gift Add-ons)">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <path d="M16 10a4 4 0 0 1-8 0"></path>
+            </svg>
+            <span class="badge-count" id="cart-badge">2</span>
+          </button>
+
+          <div class="nav-dropdown-card" id="cart-quick-dropdown">
+            <div class="dropdown-arrow-up right-align"></div>
+            <div class="quick-dropdown-header">
+              <span>👑 LUXURY SHOPPING BAG</span>
+              <span class="quick-dropdown-badge" id="quick-cart-badge-count">2 ITEMS</span>
+            </div>
+            <div class="quick-dropdown-list" id="quick-cart-list">
+              <!-- Dynamically populated by script.js -->
+            </div>
+            <div class="quick-dropdown-options-bar">
+              <div class="options-bar-title">✨ ADD SKINCARE & GIFTS IN 1-CLICK:</div>
+              <div class="quick-options-chips">
+                <button class="quick-opt-chip" data-quickadd="gold_elixir">+ 24K Gold Elixir ($68)</button>
+                <button class="quick-opt-chip" data-quickadd="rose_mist">+ Rose Dew Mist ($38)</button>
+                <button class="quick-opt-chip" data-quickadd="discovery_set">+ Royal Coffret ($65)</button>
+              </div>
+            </div>
+            <div class="quick-dropdown-footer">
+              <div class="quick-subtotal-row">
+                <span class="subtotal-label">Subtotal:</span>
+                <span class="subtotal-amount" id="quick-cart-subtotal">$143.00</span>
+              </div>
+              <button class="quick-action-full-btn gold-btn" id="btn-open-full-cart">
+                <span>OPEN FULL BAG & CHECKOUT</span>
+                <span>→</span>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </header>
@@ -155,6 +269,24 @@
         <span class="subbrand-badge">MAISON BELLAVITA</span>
         <span class="subbrand-dot">·</span>
         <span class="subbrand-type">HAUTE PARFUMERIE</span>
+      </div>
+
+      <!-- Luxury Department Switcher (Haute Parfums · Botanical Skincare · Royal Gifts) -->
+      <div class="hero-department-tabs" aria-label="Maison Departments">
+        <button class="dept-tab-btn active" id="dept-btn-parfums" title="Explore Haute Parfums Collection">
+          <span class="dept-icon">👑</span>
+          <span class="dept-title">HAUTE PARFUMS</span>
+        </button>
+        <button class="dept-tab-btn" id="dept-btn-skincare" title="Explore Botanical Skincare Collection">
+          <span class="dept-icon">✨</span>
+          <span class="dept-title">BOTANICAL SKINCARE</span>
+          <span class="dept-badge">NEW</span>
+        </button>
+        <button class="dept-tab-btn" id="dept-btn-gifts" title="Explore Royal Gifts & Coffrets">
+          <span class="dept-icon">🎁</span>
+          <span class="dept-title">ROYAL GIFTS</span>
+          <span class="dept-badge royal">IMPERIAL</span>
+        </button>
       </div>
 
       <!-- Royal Perfume Collection Switcher (Clean, Native, Minimalist) -->
@@ -992,12 +1124,22 @@
       <button class="close-modal-btn" id="btn-close-collection">&times;</button>
       <div class="modal-header">
         <span class="modal-subtitle">⚜ ATELIER ROYAL BELLAVITA ⚜</span>
-        <h2 class="modal-title">THE IMPERIAL HAUTE PARFUMS</h2>
-        <p class="modal-desc">Explore mastercrafted flacons, each celebrating sovereign Mediterranean botanicals, imperial gold accents, and master perfumery.</p>
+        <h2 class="modal-title" id="collection-modal-title">THE IMPERIAL ATELIER CATALOG</h2>
+        <p class="modal-desc">Explore mastercrafted creations across Haute Parfumerie, Botanical Skincare elixirs, and Imperial Presentation Coffrets.</p>
       </div>
-      <div class="collection-grid">
-        <!-- Item 1: Bellavita Blush (Current) -->
-        <div class="collection-card featured" id="card-col-blush">
+
+      <!-- Category Filter Tabs for Collections Modal -->
+      <div class="collection-filter-bar">
+        <button class="collection-filter-pill active" data-col-filter="all">ALL CREATIONS (12)</button>
+        <button class="collection-filter-pill" data-col-filter="fragrance">HAUTE PARFUMS (4)</button>
+        <button class="collection-filter-pill" data-col-filter="skincare">BOTANICAL SKINCARE (4)</button>
+        <button class="collection-filter-pill" data-col-filter="gift">ROYAL GIFTS (4)</button>
+      </div>
+
+      <div class="collection-grid" id="collection-items-grid">
+        <!-- ================= FRAGRANCES (4) ================= -->
+        <!-- Item 1: Bellavita Blush -->
+        <div class="collection-card featured cat-fragrance" id="card-col-blush" data-category="fragrance">
           <div class="badge-featured">👑 ÉDITION ROYALE</div>
           <div class="card-image-box">
             <div class="crystal-glow-circle blush"></div>
@@ -1005,8 +1147,8 @@
           </div>
           <div class="card-info">
             <h3 class="card-title">Bellavita Blush</h3>
-            <span class="card-type">Eau de Parfum</span>
-            <p class="card-notes">Jasmine · Italian Mandarin · Peach · Amber</p>
+            <span class="card-type">Haute Parfum · 100ml / 3.4 fl. oz.</span>
+            <p class="card-notes">Jasmine Sambac · Italian Mandarin · Dewy Peach · Amber</p>
             <div class="card-bottom">
               <span class="card-price">$75 <small>/ 100ml</small></span>
               <button class="card-cta-btn" data-buy="blush">SELECT</button>
@@ -1014,8 +1156,8 @@
           </div>
         </div>
 
-        <!-- Item 2: Bellavita Rosé Woman (50% Off) -->
-        <div class="collection-card" id="card-col-rose">
+        <!-- Item 2: Bellavita Rosé Woman -->
+        <div class="collection-card cat-fragrance" id="card-col-rose" data-category="fragrance">
           <div class="badge-featured" style="background:#e8505b;">50% OFF SPECIAL</div>
           <div class="card-image-box">
             <div class="crystal-glow-circle deep-rose"></div>
@@ -1033,7 +1175,8 @@
         </div>
 
         <!-- Item 3: Bellavita White Oud -->
-        <div class="collection-card" id="card-col-white-oud">
+        <div class="collection-card cat-fragrance" id="card-col-white-oud" data-category="fragrance">
+          <div class="badge-featured" style="background:#2d3748;">NOBLE OUD</div>
           <div class="card-image-box">
             <div class="crystal-glow-circle white-oud"></div>
             <div class="bottle-silhouette white-oud"></div>
@@ -1050,7 +1193,8 @@
         </div>
 
         <!-- Item 4: Bellavita Honey Oud -->
-        <div class="collection-card" id="card-col-honey-oud">
+        <div class="collection-card cat-fragrance" id="card-col-honey-oud" data-category="fragrance">
+          <div class="badge-featured" style="background:#b45309;">GOLDEN NECTAR</div>
           <div class="card-image-box">
             <div class="crystal-glow-circle honey-oud"></div>
             <div class="bottle-silhouette honey-oud"></div>
@@ -1062,6 +1206,144 @@
             <div class="card-bottom">
               <span class="card-price">$80 <small>/ 100ml</small></span>
               <button class="card-cta-btn" data-buy="honey_oud" id="btn-col-select-honey-oud">SELECT</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= BOTANICAL SKINCARE (4) ================= -->
+        <!-- Skincare Item 1 -->
+        <div class="collection-card cat-skincare" id="card-col-gold-elixir" data-category="skincare">
+          <div class="badge-featured" style="background:#2b7a4b;">👑 24K BOTANICAL</div>
+          <div class="card-image-box">
+            <img src="assets/skincare-gold-elixir.jpg" alt="24K Gold Face Elixir" class="col-card-photo">
+          </div>
+          <div class="card-info">
+            <h3 class="card-title">24K Gold Face Elixir</h3>
+            <span class="card-type">Haute Botanical Skincare · 30ml / 1 fl. oz.</span>
+            <p class="card-notes">Pure 24K Gold Flakes · Rosehip Botanical Oil · Botanical Squalane</p>
+            <div class="card-bottom">
+              <span class="card-price">$68.00 <small>/ 30ml</small></span>
+              <button class="card-cta-btn" data-action="quick-add-bag" data-id="gold_elixir">+ LUXURY BAG</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Skincare Item 2 -->
+        <div class="collection-card cat-skincare" id="card-col-rose-mist" data-category="skincare">
+          <div class="badge-featured" style="background:#2b7a4b;">HYDRATION DEW</div>
+          <div class="card-image-box">
+            <img src="assets/skincare-rose-mist.jpg" alt="Royal Damask Rose Dew Mist" class="col-card-photo">
+          </div>
+          <div class="card-info">
+            <h3 class="card-title">Royal Damask Rose Dew Mist</h3>
+            <span class="card-type">Haute Botanical Skincare · 100ml / 3.4 fl. oz.</span>
+            <p class="card-notes">Distilled Twilight Rose Water · Royal Hyaluronic Acid · Orange Blossom</p>
+            <div class="card-bottom">
+              <span class="card-price">$38.00 <small>/ 100ml</small></span>
+              <button class="card-cta-btn" data-action="quick-add-bag" data-id="rose_mist">+ LUXURY BAG</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Skincare Item 3 -->
+        <div class="collection-card cat-skincare" id="card-col-truffle-cream" data-category="skincare">
+          <div class="badge-featured" style="background:#2b7a4b;">SOVEREIGN CRÈME</div>
+          <div class="card-image-box">
+            <img src="assets/skincare-truffle-cream.jpg" alt="White Truffle Sovereign Crème" class="col-card-photo">
+          </div>
+          <div class="card-info">
+            <h3 class="card-title">White Truffle Sovereign Crème</h3>
+            <span class="card-type">Haute Botanical Skincare · 50ml / 1.7 fl. oz.</span>
+            <p class="card-notes">Rare Piedmont White Truffle · Royal Bio-Peptides · Shea Butter</p>
+            <div class="card-bottom">
+              <span class="card-price">$85.00 <small>/ 50ml</small></span>
+              <button class="card-cta-btn" data-action="quick-add-bag" data-id="truffle_cream">+ LUXURY BAG</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Skincare Item 4 -->
+        <div class="collection-card cat-skincare" id="card-col-honey-balm" data-category="skincare">
+          <div class="badge-featured" style="background:#2b7a4b;">OVERNIGHT GLOW</div>
+          <div class="card-image-box">
+            <img src="assets/skincare-honey-balm.jpg" alt="Saffron & Wild Honey Glow Balm" class="col-card-photo">
+          </div>
+          <div class="card-info">
+            <h3 class="card-title">Saffron & Honey Glow Balm</h3>
+            <span class="card-type">Haute Botanical Skincare · 50ml / 1.7 fl. oz.</span>
+            <p class="card-notes">Kashmir Saffron Threads · Golden Wild Honey · Propolis Nectar</p>
+            <div class="card-bottom">
+              <span class="card-price">$54.00 <small>/ 50ml</small></span>
+              <button class="card-cta-btn" data-action="quick-add-bag" data-id="honey_balm">+ LUXURY BAG</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= ROYAL GIFTS (4) ================= -->
+        <!-- Gift Item 1 -->
+        <div class="collection-card cat-gift" id="card-col-discovery-set" data-category="gift">
+          <div class="badge-featured" style="background:#b72c1c;">👑 COFFRET SET</div>
+          <div class="card-image-box">
+            <img src="assets/gift-discovery-coffret.jpg" alt="The Grand Royal Discovery Coffret" class="col-card-photo">
+          </div>
+          <div class="card-info">
+            <h3 class="card-title">The Grand Discovery Coffret</h3>
+            <span class="card-type">Imperial Gift Presentation · 4 × 10ml Crystal Vials</span>
+            <p class="card-notes">Blush, Rosé Woman, White Oud & Honey Oud in Gold Presentation Chest</p>
+            <div class="card-bottom">
+              <span class="card-price">$65.00 <small>/ 4x10ml</small></span>
+              <button class="card-cta-btn" data-action="quick-add-bag" data-id="discovery_set">+ LUXURY BAG</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Gift Item 2 -->
+        <div class="collection-card cat-gift" id="card-col-emperor-set" data-category="gift">
+          <div class="badge-featured" style="background:#b72c1c;">COLLECTOR'S CHEST</div>
+          <div class="card-image-box">
+            <img src="assets/gift-emperor-set.jpg" alt="Emperor's 24K Gold Coffret" class="col-card-photo">
+          </div>
+          <div class="card-info">
+            <h3 class="card-title">Emperor's 24K Gold Coffret</h3>
+            <span class="card-type">Collector's Edition · 100ml Special Flacon</span>
+            <p class="card-notes">24K Gilded Flacon nestled in Silk Satin Velvet Royal Presentation Chest</p>
+            <div class="card-bottom">
+              <span class="card-price">$145.00 <small>/ Set</small></span>
+              <button class="card-cta-btn" data-action="quick-add-bag" data-id="emperor_set">+ LUXURY BAG</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Gift Item 3 -->
+        <div class="collection-card cat-gift" id="card-col-monogram-pouch" data-category="gift">
+          <div class="badge-featured" style="background:#b72c1c;">BESPOKE VELVET</div>
+          <div class="card-image-box">
+            <img src="assets/gift-monogram-pouch.jpg" alt="Bespoke Velvet Monogram Pouch" class="col-card-photo">
+          </div>
+          <div class="card-info">
+            <h3 class="card-title">Bespoke Monogram Velvet Pouch</h3>
+            <span class="card-type">Royal Travel Accessory · Hand-Stitched Burgundy Velvet</span>
+            <p class="card-notes">Embroidered 24K Gold Monogram with Golden Silk Tassels</p>
+            <div class="card-bottom">
+              <span class="card-price">$28.00 <small>/ Pouch</small></span>
+              <button class="card-cta-btn" data-action="quick-add-bag" data-id="monogram_pouch">+ LUXURY BAG</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Gift Item 4 -->
+        <div class="collection-card cat-gift" id="card-col-amber-candle" data-category="gift">
+          <div class="badge-featured" style="background:#b72c1c;">SOY BOUGIE 65HR</div>
+          <div class="card-image-box">
+            <img src="assets/gift-amber-candle.jpg" alt="Versailles Imperial Amber Candle" class="col-card-photo">
+          </div>
+          <div class="card-info">
+            <h3 class="card-title">Versailles Imperial Amber Candle</h3>
+            <span class="card-type">Haute Bougie Parfumée · 65 Hours Clean Burn</span>
+            <p class="card-notes">Frosted Fluted Glass Crystal with Polished 24K Gold Metal Lid</p>
+            <div class="card-bottom">
+              <span class="card-price">$48.00 <small>/ 280g</small></span>
+              <button class="card-cta-btn" data-action="quick-add-bag" data-id="amber_candle">+ LUXURY BAG</button>
             </div>
           </div>
         </div>
@@ -1502,6 +1784,6 @@
   <div id="toast-container" class="toast-container" aria-live="polite"></div>
 
   <!-- Main Application Script -->
-  <script src="script.js?v=2.0"></script>
+  <script src="script.js?v=3.5"></script>
 </body>
 </html>
