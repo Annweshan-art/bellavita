@@ -1904,6 +1904,18 @@
       });
     }
 
+    // Hero 1-Click Quick Add to Bag
+    const btnHeroQuickAdd = document.getElementById('btn-hero-quick-add');
+    if (btnHeroQuickAdd) {
+      btnHeroQuickAdd.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const prod = PRODUCTS[activeProduct];
+        if (prod) {
+          addToCart(activeProduct, prod.size, prod.price, true);
+        }
+      });
+    }
+
     // Spray Scent Button
     const btnSprayScent = document.getElementById('btn-spray-scent');
     if (btnSprayScent) {

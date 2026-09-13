@@ -21,7 +21,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
 
-  <link rel="stylesheet" href="style.css?v=3.5">
+  <link rel="stylesheet" href="style.css?v=3.7">
 </head>
 <body>
   <!-- 1. Ambient 300-Frame Cinemagraph Canvas (Static Bottle + Continuously Moving Flowers) -->
@@ -253,40 +253,18 @@
       <div class="royal-filigree bottom-left" aria-hidden="true"></div>
       <div class="royal-filigree bottom-right" aria-hidden="true"></div>
 
-      <!-- Royal Crest & Imperial Crown Header -->
-      <div class="royal-crest-banner">
-        <div class="royal-crown-icon">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
-            <path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/>
-          </svg>
+      <!-- Royal Heraldry & Department Switcher Bar -->
+      <div class="hero-top-badge-row">
+        <div class="royal-crest-banner">
+          <span class="royal-crown-icon">👑</span>
+          <span class="royal-warrant-title">MAISON BELLAVITA</span>
+          <span class="royal-crest-pill">ÉDITION ROYALE</span>
         </div>
-        <span class="royal-warrant-title">BY ROYAL WARRANT OF HAUTE PARFUMERIE</span>
-        <span class="royal-crest-pill">👑 ÉDITION ROYALE</span>
-      </div>
-
-      <!-- Sub-Brand & Heritage Badge -->
-      <div class="hero-subbrand-wrap">
-        <span class="subbrand-badge">MAISON BELLAVITA</span>
-        <span class="subbrand-dot">·</span>
-        <span class="subbrand-type">HAUTE PARFUMERIE</span>
-      </div>
-
-      <!-- Luxury Department Switcher (Haute Parfums · Botanical Skincare · Royal Gifts) -->
-      <div class="hero-department-tabs" aria-label="Maison Departments">
-        <button class="dept-tab-btn active" id="dept-btn-parfums" title="Explore Haute Parfums Collection">
-          <span class="dept-icon">👑</span>
-          <span class="dept-title">HAUTE PARFUMS</span>
-        </button>
-        <button class="dept-tab-btn" id="dept-btn-skincare" title="Explore Botanical Skincare Collection">
-          <span class="dept-icon">✨</span>
-          <span class="dept-title">BOTANICAL SKINCARE</span>
-          <span class="dept-badge">NEW</span>
-        </button>
-        <button class="dept-tab-btn" id="dept-btn-gifts" title="Explore Royal Gifts & Coffrets">
-          <span class="dept-icon">🎁</span>
-          <span class="dept-title">ROYAL GIFTS</span>
-          <span class="dept-badge royal">IMPERIAL</span>
-        </button>
+        <div class="hero-department-tabs" aria-label="Maison Departments">
+          <button class="dept-tab-btn active" id="dept-btn-parfums" title="Explore Haute Parfums Collection">👑 PARFUMS</button>
+          <button class="dept-tab-btn" id="dept-btn-skincare" title="Explore Botanical Skincare Collection">✨ SKINCARE <span class="dept-pill-mini">NEW</span></button>
+          <button class="dept-tab-btn" id="dept-btn-gifts" title="Explore Royal Gifts & Coffrets">🎁 GIFTS</button>
+        </div>
       </div>
 
       <!-- Royal Perfume Collection Switcher (Clean, Native, Minimalist) -->
@@ -373,17 +351,29 @@
         </div>
       </div>
 
-      <!-- Action Buttons Area -->
+      <!-- Action Buttons Area with Highly Visible Purchase Controls -->
       <div class="cta-action-area">
         <div class="cta-buttons-row">
-          <button class="shop-now-btn" id="btn-shop-now" aria-label="Shop Fragrance Now">
-            <span class="btn-text" id="purchase-btn-text">PURCHASE FLACON</span>
+          <!-- Primary Glowing Purchase Button with Live Price -->
+          <button class="shop-now-btn" id="btn-shop-now" aria-label="Purchase Bellavita Flacon">
+            <span class="btn-royal-icon">⚜</span>
+            <span class="btn-text" id="purchase-btn-text">PURCHASE FLACON ($75.00)</span>
             <span class="btn-arrow">→</span>
+          </button>
+
+          <!-- 1-Click Quick Add to Bag -->
+          <button class="hero-quick-bag-btn" id="btn-hero-quick-add" title="Quick Add to Luxury Bag" aria-label="Quick Add to Bag">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <path d="M16 10a4 4 0 0 1-8 0"></path>
+            </svg>
+            <span>+ BAG</span>
           </button>
 
           <!-- 3D Spray Fragrance Button -->
           <button class="spray-fragrance-btn" id="btn-spray-scent" title="Experience 3D Fragrance Mist Spray">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 2v4m0 16v-4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"></path>
             </svg>
             <span>SPRAY MIST</span>
@@ -391,11 +381,9 @@
 
           <!-- 3D Flacon Magnifier Inspector Toggle -->
           <button class="inspect-flacon-btn" id="btn-inspect-flacon" title="Toggle 3D Magnifier on Flacon">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="11" cy="11" r="8"></circle>
               <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-              <line x1="11" y1="8" x2="11" y2="14"></line>
-              <line x1="8" y1="11" x2="14" y2="11"></line>
             </svg>
             <span id="inspect-btn-text">INSPECT</span>
           </button>
@@ -406,7 +394,7 @@
           <span class="perk-dot">·</span>
           <span class="perk-item">⚜ Royal Gold Embossed Coffret</span>
           <span class="perk-dot">·</span>
-          <span class="perk-item">⚜ White-Glove Insured Courier</span>
+          <span class="perk-item">⚜ White-Glove Insured Delivery</span>
         </div>
       </div>
     </div>
@@ -512,7 +500,7 @@
       <div class="editorial-showcase-container">
 
         <!-- SLOT 1: BELLAVITA BLUSH -->
-        <article class="editorial-slot-card active blush-card" id="editorial-card-blush" style="background-image: url('assets/editorial-blush.png');">
+        <article class="editorial-slot-card active blush-card" id="editorial-card-blush" style="background-image: url('assets/bellavita-blush-editorial.jpg');">
           <div class="editorial-card-inner">
             <div class="editorial-left-pane">
               <h3 class="editorial-headline">Elegance in<br>Every Scent</h3>
@@ -531,7 +519,7 @@
               <p class="testimonial-quote">
                 "This perfume makes me feel confident and elegant—absolutely in love!"
               </p>
-              <div class="testimonial-author-row">
+              <div class="editorial-author-row">
                 <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Emily R." class="author-avatar" loading="lazy">
                 <div class="author-meta">
                   <span class="author-name">Emily R.</span>
@@ -543,15 +531,15 @@
 
           <!-- Floating Flacon Badge (Bottom Right) -->
           <div class="editorial-floating-badge" id="badge-blush">
-            <img src="assets/editorial-blush.png" alt="Bellavita Blush Flacon" class="floating-badge-thumb" style="object-position: 70% 30%; transform: scale(1.6); border-radius: 8px;">
-            <h4 class="floating-badge-name">Lumière Essence</h4>
+            <img src="frames/ezgif-frame-001.jpg" alt="Bellavita Blush Flacon" class="floating-badge-thumb" style="object-position: center; border-radius: 8px;">
+            <h4 class="floating-badge-name">Bellavita Blush</h4>
             <span class="floating-badge-detail">BLUSH · 100 ML</span>
             <button class="floating-badge-cta" data-action="quick-add" data-product="blush">ORDER · $75</button>
           </div>
         </article>
 
         <!-- SLOT 2: BELLAVITA ROSÉ WOMAN -->
-        <article class="editorial-slot-card rose-card" id="editorial-card-rose" style="background-image: url('assets/editorial-rose.jpg');">
+        <article class="editorial-slot-card rose-card" id="editorial-card-rose" style="background-image: url('assets/bellavita-rose-background.jpg');">
           <div class="editorial-card-inner">
             <div class="editorial-left-pane">
               <h3 class="editorial-headline">Velvet Petals of<br>Royal Romance</h3>
@@ -570,7 +558,7 @@
               <p class="testimonial-quote">
                 "The velvety Damask rose and strawberry accord last all day on my skin. Pure royalty in a travel flacon!"
               </p>
-              <div class="testimonial-author-row">
+              <div class="editorial-author-row">
                 <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&auto=format&fit=crop&q=80" alt="Victoria S." class="author-avatar" loading="lazy">
                 <div class="author-meta">
                   <span class="author-name">Victoria S.</span>
@@ -583,14 +571,14 @@
           <!-- Floating Flacon Badge (Bottom Right) -->
           <div class="editorial-floating-badge" id="badge-rose">
             <img src="assets/bellavita-rose-woman.png" alt="Bellavita Rosé Woman" class="floating-badge-thumb">
-            <h4 class="floating-badge-name">Rosé Woman</h4>
+            <h4 class="floating-badge-name">Bellavita Rosé Woman</h4>
             <span class="floating-badge-detail">20 ML · 50% ROYAL SPECIAL</span>
             <button class="floating-badge-cta" data-action="quick-add" data-product="rose">ORDER · $19</button>
           </div>
         </article>
 
         <!-- SLOT 3: BELLAVITA WHITE OUD -->
-        <article class="editorial-slot-card white-oud-card" id="editorial-card-white_oud" style="background-image: url('assets/editorial-white-oud.jpg');">
+        <article class="editorial-slot-card white-oud-card" id="editorial-card-white_oud" style="background-image: url('assets/bellavita-white-oud-background.jpg');">
           <div class="editorial-card-inner">
             <div class="editorial-left-pane">
               <h3 class="editorial-headline">Noble Majesty &<br>Pristine Allure</h3>
@@ -609,7 +597,7 @@
               <p class="testimonial-quote">
                 "Pure crystalline perfection. Clean, noble, and deeply magnetic. My signature scent for royal evenings."
               </p>
-              <div class="testimonial-author-row">
+              <div class="editorial-author-row">
                 <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80" alt="Alexander M." class="author-avatar" loading="lazy">
                 <div class="author-meta">
                   <span class="author-name">Alexander M.</span>
@@ -622,14 +610,14 @@
           <!-- Floating Flacon Badge (Bottom Right) -->
           <div class="editorial-floating-badge" id="badge-white_oud">
             <img src="assets/bellavita-white-oud-thumb.png" alt="Bellavita White Oud" class="floating-badge-thumb">
-            <h4 class="floating-badge-name">White Oud</h4>
+            <h4 class="floating-badge-name">Bellavita White Oud</h4>
             <span class="floating-badge-detail">100 ML · NOBLE AGARWOOD</span>
-            <button class="floating-badge-cta" data-action="quick-add" data-product="white_oud">ORDER · $80</button>
+            <button class="floating-badge-cta" data-action="quick-add" data-product="white_oud">ORDER · $85</button>
           </div>
         </article>
 
         <!-- SLOT 4: BELLAVITA HONEY OUD -->
-        <article class="editorial-slot-card honey-oud-card" id="editorial-card-honey_oud" style="background-image: url('assets/editorial-honey-oud.jpg');">
+        <article class="editorial-slot-card honey-oud-card" id="editorial-card-honey_oud" style="background-image: url('assets/bellavita-honey-oud-background.jpg');">
           <div class="editorial-card-inner">
             <div class="editorial-left-pane">
               <h3 class="editorial-headline">Golden Nectar<br>of the Orient</h3>
@@ -648,7 +636,7 @@
               <p class="testimonial-quote">
                 "Liquid gold in a flacon. Decadent honey wrapped in royal oud smoke. Absolutely majestic and luxurious."
               </p>
-              <div class="testimonial-author-row">
+              <div class="editorial-author-row">
                 <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&auto=format&fit=crop&q=80" alt="Camille L." class="author-avatar" loading="lazy">
                 <div class="author-meta">
                   <span class="author-name">Camille L.</span>
@@ -661,7 +649,7 @@
           <!-- Floating Flacon Badge (Bottom Right) -->
           <div class="editorial-floating-badge" id="badge-honey_oud">
             <img src="assets/bellavita-honey-oud-thumb.png" alt="Bellavita Honey Oud" class="floating-badge-thumb">
-            <h4 class="floating-badge-name">Honey Oud</h4>
+            <h4 class="floating-badge-name">Bellavita Honey Oud</h4>
             <span class="floating-badge-detail">100 ML · WILD HONEY & OUD</span>
             <button class="floating-badge-cta" data-action="quick-add" data-product="honey_oud">ORDER · $80</button>
           </div>
@@ -1784,6 +1772,6 @@
   <div id="toast-container" class="toast-container" aria-live="polite"></div>
 
   <!-- Main Application Script -->
-  <script src="script.js?v=3.5"></script>
+  <script src="script.js?v=3.7"></script>
 </body>
 </html>
