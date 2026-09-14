@@ -218,6 +218,7 @@
 
   // Quad-Product Royal Boutique Catalog (BLUSH, ROSÉ WOMAN, WHITE OUD, HONEY OUD)
   let activeProduct = 'blush'; // 'blush', 'rose', 'white_oud', 'honey_oud'
+  let switchProduct = null;
   const roseBgImg = new Image();
   roseBgImg.src = 'assets/bellavita-rose-background.jpg';
   roseBgImg.onload = () => {
@@ -491,6 +492,11 @@
   let loadedFramesCount = 0;
   const frameImages = new Array(TOTAL_FRAMES);
 
+  // Rosé Woman Cinemagraph Frames (300 frames from ezgif-3ca8d4a1439f9f5e-jpg)
+  let loadedRoseFramesCount = 0;
+  const roseFrameImages = new Array(TOTAL_FRAMES);
+  let rosePreloadStarted = false;
+
   // E-Commerce Dynamic State
   let cartItems = [
     { id: 'blush', size: '100ml', price: 75, qty: 1 },
@@ -551,6 +557,11 @@
   function getFrameUrl(index) {
     const pad = String(index + 1).padStart(3, '0');
     return `frames/ezgif-frame-${pad}.jpg`;
+  }
+
+  function getRoseFrameUrl(index) {
+    const pad = String(index + 1).padStart(3, '0');
+    return `frames-rose/ezgif-frame-${pad}.jpg`;
   }
 
   function resizeAllCanvases() {
@@ -615,6 +626,25 @@
       }
     }
     return frameImages[0] || null;
+  }
+
+  function getNearestLoadedRoseImage(index) {
+    if (roseFrameImages[index] && roseFrameImages[index].complete && roseFrameImages[index].naturalWidth > 0) {
+      return roseFrameImages[index];
+    }
+    // Search outward for closest loaded neighbor
+    for (let d = 1; d < TOTAL_FRAMES; d++) {
+      const prev = (index - d + TOTAL_FRAMES) % TOTAL_FRAMES;
+      if (roseFrameImages[prev] && roseFrameImages[prev].complete && roseFrameImages[prev].naturalWidth > 0) {
+        return roseFrameImages[prev];
+      }
+      const next = (index + d) % TOTAL_FRAMES;
+      if (roseFrameImages[next] && roseFrameImages[next].complete && roseFrameImages[next].naturalWidth > 0) {
+        return roseFrameImages[next];
+      }
+    }
+    if (roseBgImg && roseBgImg.complete && roseBgImg.naturalWidth) return roseBgImg;
+    return roseFrameImages[0] || null;
   }
 
   // =========================================================================
@@ -780,10 +810,11 @@
   function renderCurrentFrame(now) {
     const time = now || performance.now();
     if (activeProduct === 'rose') {
-      if (roseBgImg && roseBgImg.complete && roseBgImg.naturalWidth) {
-        renderLivingCinemagraph(ctx, roseBgImg, canvas.width, canvas.height, 'rose', time);
+      const img = getNearestLoadedRoseImage(currentFrame);
+      if (img) {
+        drawCover(ctx, img, canvas.width, canvas.height);
         if (isMagnifierActive) {
-          updateMagnifierView(roseBgImg);
+          updateMagnifierView(img);
         }
       }
     } else if (activeProduct === 'white_oud') {
@@ -846,6 +877,9 @@
 
   // Progressive Priority Preloader
   function startFramePreloading() {
+    // Start Rosé frames preloading in parallel background
+    startRoseFramePreloading();
+
     // 1. Load First Frame IMMEDIATELY
     const firstImg = new Image();
     firstImg.src = getFrameUrl(0);
@@ -915,6 +949,66 @@
     const pct = Math.min(100, Math.round((loadedFramesCount / TOTAL_FRAMES) * 100));
     if (loaderBar) loaderBar.style.width = pct + '%';
     if (loaderPercent) loaderPercent.textContent = pct + '%';
+  }
+
+  // Progressive Priority Preloader for Rosé Woman (300 frames from ezgif-3ca8d4a1439f9f5e-jpg)
+  function startRoseFramePreloading() {
+    if (rosePreloadStarted) return;
+    rosePreloadStarted = true;
+
+    const firstImg = new Image();
+    firstImg.src = getRoseFrameUrl(0);
+    firstImg.onload = () => {
+      roseFrameImages[0] = firstImg;
+      loadedRoseFramesCount++;
+      if (activeProduct === 'rose') {
+        renderCurrentFrame();
+      }
+      preloadRoseKeyframes();
+    };
+    firstImg.onerror = () => {
+      setTimeout(() => {
+        rosePreloadStarted = false;
+        startRoseFramePreloading();
+      }, 800);
+    };
+  }
+
+  function preloadRoseKeyframes() {
+    const keyframeIndices = [];
+    for (let i = 1; i < TOTAL_FRAMES; i += 4) {
+      keyframeIndices.push(i);
+    }
+
+    let loadedKeyframes = 0;
+    keyframeIndices.forEach(idx => {
+      const img = new Image();
+      img.src = getRoseFrameUrl(idx);
+      img.onload = () => {
+        roseFrameImages[idx] = img;
+        loadedRoseFramesCount++;
+        loadedKeyframes++;
+        if (loadedKeyframes >= Math.min(20, keyframeIndices.length)) {
+          preloadAllRemainingRoseFrames();
+        }
+      };
+      img.onerror = () => {
+        loadedKeyframes++;
+      };
+    });
+  }
+
+  function preloadAllRemainingRoseFrames() {
+    for (let i = 0; i < TOTAL_FRAMES; i++) {
+      if (!roseFrameImages[i]) {
+        const img = new Image();
+        img.src = getRoseFrameUrl(i);
+        img.onload = () => {
+          roseFrameImages[i] = img;
+          loadedRoseFramesCount++;
+        };
+      }
+    }
   }
 
   // =========================================================================
@@ -1297,7 +1391,7 @@
   // =========================================================================
 
   function getActiveProductImage() {
-    if (activeProduct === 'rose') return roseBgImg;
+    if (activeProduct === 'rose') return getNearestLoadedRoseImage(currentFrame);
     if (activeProduct === 'white_oud') return whiteOudBgImg;
     if (activeProduct === 'honey_oud') return honeyOudBgImg;
     return getNearestLoadedImage(currentFrame);
@@ -1949,7 +2043,7 @@
       });
     }
 
-    function switchProduct(productId) {
+    switchProduct = function(productId) {
       if (productId !== 'blush' && productId !== 'rose' && productId !== 'white_oud' && productId !== 'honey_oud') return;
       activeProduct = productId;
 
@@ -2038,12 +2132,15 @@
       updateShopModalContent();
 
       // 7. Immediately Re-render Cinemagraph/Background
+      if (productId === 'rose') {
+        startRoseFramePreloading();
+      }
       renderCurrentFrame();
 
       playRoyalChime();
       const toastMessages = {
         blush: '🌸 Bellavita Blush Selected: 3D Living Floral Sanctuary',
-        rose: '🌹 Bellavita Rosé Woman Selected: 50% Off Special Edition',
+        rose: '🌹 Bellavita Rosé Woman Selected: Living Damask Roses in Motion',
         white_oud: '🤍 Bellavita White Oud Selected: Noble Alabaster & Amber Resonance',
         honey_oud: '🍯 Bellavita Honey Oud Selected: Liquid Gold & Wild Honeyed Sillage'
       };
@@ -2238,7 +2335,7 @@
 
         if (activeProduct === 'rose') {
           if (mood === 'radiant') {
-            if (heroDesc) heroDesc.textContent = 'An intoxicating symphony of velvety Damask rose and sun-kissed wild berries. Accented with radiant pink pepper and warm golden amber, capturing pure feminine royalty in a slender, travel-luxe flacon.';
+            if (heroDesc) heroDesc.textContent = 'An intoxicating symphony of velvety Damask rose and sun-kissed wild berries. Accented with radiant pink pepper and warm golden amber, surrounded by living blooms and petals in perpetual motion.';
           } else if (mood === 'feminine') {
             if (heroDesc) heroDesc.textContent = 'Sweet wild Alpine strawberries dance with Turkish rose essence and creamy bourbon vanilla, creating an intimate second-skin aura that lingers like soft velvet.';
           } else if (mood === 'timeless') {
@@ -3158,13 +3255,27 @@
   }
 
   // Initialize
-  document.addEventListener('DOMContentLoaded', () => {
+  function initApp() {
     resizeAllCanvases();
     startFramePreloading();
     setupModalsAndDrawers();
     setupEditorialReviews();
+
+    // Support deep linking to specific creation (e.g. ?product=rose or #rose)
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialProduct = urlParams.get('product') || window.location.hash.replace('#', '');
+    if (initialProduct && ['blush', 'rose', 'white_oud', 'honey_oud'].includes(initialProduct.toLowerCase())) {
+      switchProduct(initialProduct.toLowerCase());
+    }
+
     requestAnimationFrame(updateAnimationLoop);
-  });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initApp);
+  } else {
+    initApp();
+  }
 
 })();
 
