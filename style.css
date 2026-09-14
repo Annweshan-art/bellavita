@@ -882,7 +882,7 @@ body {
    THEME: ROSÉ WOMAN (AUTOMATIC BACKGROUND & INTERFACE SHIFT)
    ========================================================================== */
 body.theme-rose .video-overlay-scrim {
-  background: radial-gradient(circle at 62% 48%, rgba(255, 230, 236, 0.32) 0%, rgba(254, 240, 244, 0.42) 45%, rgba(246, 218, 226, 0.72) 100%) !important;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 245, 230, 0.12) 0%, rgba(254, 238, 230, 0.22) 50%, rgba(246, 218, 205, 0.45) 100%) !important;
   transition: background 0.8s ease;
 }
 

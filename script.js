@@ -277,9 +277,9 @@
     },
     rose: {
       id: 'rose',
-      title: 'ROSÉ',
-      subtitle: 'WOMAN · EAU DE PARFUM · 20ml / 0.68 fl. oz.',
-      description: 'An intoxicating symphony of velvety Damask rose and sun-kissed wild berries. Accented with radiant pink pepper and warm golden amber, capturing pure feminine royalty in a slender, travel-luxe flacon.',
+      title: 'ROSÉ WOMAN',
+      subtitle: 'EAU DE PARFUM · 100 ml | 3.4 fl. oz.',
+      description: 'An intoxicating symphony of velvety Damask rose, sun-kissed wild berries, and spiced pink pepper. Nestled in a blooming sanctuary of fresh pink roses, baby\'s breath, and delicate blossoms under warm Mediterranean sunlight.',
       notes: [
         { key: 'damask_rose', label: 'Damask Rose' },
         { key: 'strawberry', label: 'Wild Strawberry' },
@@ -289,20 +289,20 @@
         { key: 'vanilla_amber', label: 'Bourbon Vanilla' }
       ],
       perks: [
-        '⚜ 20ml / 0.68 fl. oz. Handbag Flacon',
-        '⚜ 50% Off Limited Royal Allocation',
-        '⚜ Royal Silk Pouch & 24K Gold Cap'
+        '⚜ 100ml / 3.4 fl. oz. Extrait Flacon',
+        '⚜ Fresh Damask Rose & Spiced Berries',
+        '⚜ White-Glove Insured Courier Delivery'
       ],
-      price: 19,
-      size: '20ml',
+      price: 75,
+      size: '100ml',
       sizes: [
-        { size: '20ml', name: '20 ml', vol: '20 ml', oz: '0.68 fl. oz. · 50% OFF', price: 19, origPrice: 38, popular: true },
-        { size: '50ml', name: '50 ml', vol: '50 ml', oz: '1.7 fl. oz. · 50% OFF', price: 39, origPrice: 78 },
-        { size: '100ml', name: '100 ml', vol: '100 ml', oz: '3.4 fl. oz. · 50% OFF', price: 59, origPrice: 118 },
-        { size: 'giftset', name: 'Royal Coffret', vol: 'Coffret', oz: '20ml + 50ml · 50% OFF', price: 69, origPrice: 138 }
+        { size: '20ml', name: '20 ml', vol: '20 ml', oz: 'Pocket Spray', price: 24 },
+        { size: '50ml', name: '50 ml', vol: '50 ml', oz: '1.7 fl. oz.', price: 48 },
+        { size: '100ml', name: '100 ml', vol: '100 ml', oz: '3.4 fl. oz.', price: 75, popular: true },
+        { size: 'giftset', name: 'Royal Coffret', vol: 'Coffret', oz: '100ml + 20ml', price: 95 }
       ],
       shopModalTitle: 'BELLAVITA ROSÉ WOMAN',
-      shopModalDesc: 'Blush-pink flacon crowned with a gleaming cylindrical gold cap. Infused with velvety Damask rose, spiced berries, and warm vanilla amber. Featuring 20ml / 0.68 fl. oz. at 50% OFF.',
+      shopModalDesc: 'Heavy optical crystal flacon crowned with a gleaming cylindrical gold cap. Infused with velvety Damask rose petals, wild strawberries, and sun-warmed amber, nestled in living blooms.',
       petalTone: 'rose'
     },
     white_oud: {
@@ -383,10 +383,10 @@
       id: 'rose',
       category: 'fragrance',
       title: 'Bellavita Rosé Woman',
-      subtitle: 'Eau de Parfum · 20 ml',
-      price: 19,
-      img: 'assets/bellavita-rose-woman-cutout.png',
-      badge: '50% OFF'
+      subtitle: 'Eau de Parfum · 100 ml',
+      price: 75,
+      img: 'assets/bellavita-rose-background.jpg',
+      badge: 'DAMASK ROSE'
     },
     white_oud: {
       id: 'white_oud',
@@ -617,24 +617,185 @@
     return frameImages[0] || null;
   }
 
-  function renderCurrentFrame() {
+  // =========================================================================
+  // LIVING FLORAL & SUNLIT SHADOW CINEMAGRAPH ENGINE
+  // Real-time organic mesh deformation for Rosé Woman, White Oud & Honey Oud
+  // =========================================================================
+  const MESH_COLS = 32;
+  const MESH_ROWS = 22;
+
+  function renderLivingCinemagraph(targetCtx, img, cw, ch, productId, timeMs) {
+    if (!img || !img.complete || !img.naturalWidth) return;
+
+    const iw = img.naturalWidth;
+    const ih = img.naturalHeight;
+    const scale = Math.max(cw / iw, ch / ih);
+    const sw = iw * scale;
+    const sh = ih * scale;
+    const sx = (cw - sw) * 0.5;
+    const sy = (ch - sh) * 0.5;
+
+    const t = (timeMs || performance.now()) * 0.001;
+
+    // Normalised UV coordinates (0..1) of stationary bottle bounding box
+    let bU1 = 0.32, bU2 = 0.65, bV1 = 0.13, bV2 = 0.84;
+    let floralSway = 1.25;
+    let shadowSway = 1.0;
+
+    if (productId === 'rose') {
+      bU1 = 0.32; bU2 = 0.65; bV1 = 0.13; bV2 = 0.84;
+      floralSway = 1.3;
+      shadowSway = 1.05;
+    } else if (productId === 'white_oud') {
+      bU1 = 0.52; bU2 = 0.77; bV1 = 0.15; bV2 = 0.78;
+      floralSway = 1.15;
+      shadowSway = 0.9;
+    } else if (productId === 'honey_oud') {
+      bU1 = 0.56; bU2 = 0.81; bV1 = 0.26; bV2 = 0.80;
+      floralSway = 1.35;
+      shadowSway = 1.15;
+    }
+
+    const mouseWindX = (mouseState.vx || 0) * 16.0;
+    const mouseWindY = (mouseState.vy || 0) * 10.0;
+
+    const cellW = iw / MESH_COLS;
+    const cellH = ih / MESH_ROWS;
+    const dstCellW = sw / MESH_COLS;
+    const dstCellH = sh / MESH_ROWS;
+
+    // Precalculate vertex grid displacements
+    const displacements = new Array((MESH_ROWS + 1) * (MESH_COLS + 1));
+    for (let r = 0; r <= MESH_ROWS; r++) {
+      const v = r / MESH_ROWS;
+      for (let c = 0; c <= MESH_COLS; c++) {
+        const u = c / MESH_COLS;
+        const idx = r * (MESH_COLS + 1) + c;
+
+        // Determine if vertex is inside the stationary flacon or in the moving flowers/shadows
+        let weight = 1.0;
+        if (u >= bU1 && u <= bU2 && v >= bV1 && v <= bV2) {
+          const dL = u - bU1;
+          const dR = bU2 - u;
+          const dT = v - bV1;
+          const dB = bV2 - v;
+          const dMin = Math.min(dL, dR, dT, dB);
+          if (dMin < 0.04) {
+            const f = dMin / 0.04;
+            weight = (1.0 - f) * (1.0 - f);
+          } else {
+            weight = 0.0; // 100% stationary bottle
+          }
+        } else {
+          const dX = Math.max(0, bU1 - u, u - bU2);
+          const dY = Math.max(0, bV1 - v, v - bV2);
+          const dist = Math.sqrt(dX * dX + dY * dY);
+          const f = Math.min(1.0, dist / 0.05);
+          weight = f * f * (3 - 2 * f);
+        }
+
+        if (weight > 0) {
+          let dx = 0;
+          let dy = 0;
+          if (v < 0.44) {
+            // Sunlit background wall shadows swaying and dancing
+            const w1 = Math.sin(t * 1.1 + u * 3.2) * 5.0;
+            const w2 = Math.cos(t * 1.9 + v * 2.8) * 2.8;
+            dx = (w1 + w2 + mouseWindX) * weight * shadowSway;
+            dy = (Math.sin(t * 0.95 + (u + v) * 2.2) * 3.2 + mouseWindY) * weight * shadowSway;
+          } else {
+            // Flower petals, leaves and floral clusters swaying and breathing
+            const p1 = Math.sin(t * 1.5 + u * 4.8 + v * 3.2) * 6.2;
+            const p2 = Math.cos(t * 2.7 - u * 3.6 + v * 2.0) * 3.5;
+            const p3 = Math.sin(t * 4.2 + (u + v) * 6.5) * 1.6;
+            dx = (p1 + p2 + p3 + mouseWindX) * weight * floralSway;
+            dy = (Math.cos(t * 1.35 + u * 3.2) * 3.8 + Math.sin(t * 2.6 + v * 3.8) * 2.0 + mouseWindY) * weight * floralSway;
+          }
+          displacements[idx] = { dx, dy };
+        } else {
+          displacements[idx] = { dx: 0, dy: 0 };
+        }
+      }
+    }
+
+    // Render deformed background and flower mesh
+    for (let r = 0; r < MESH_ROWS; r++) {
+      for (let c = 0; c < MESH_COLS; c++) {
+        const idx = r * (MESH_COLS + 1) + c;
+        const disp = displacements[idx];
+
+        const srcX = c * cellW;
+        const srcY = r * cellH;
+        const dstX = sx + c * dstCellW + disp.dx;
+        const dstY = sy + r * dstCellH + disp.dy;
+
+        targetCtx.drawImage(
+          img,
+          srcX, srcY, cellW, cellH,
+          dstX, dstY, dstCellW + 0.8, dstCellH + 0.8
+        );
+      }
+    }
+
+    // Overlay the pristine razor-sharp flacon at exact resting coordinates
+    const bSrcX = bU1 * iw;
+    const bSrcY = bV1 * ih;
+    const bSrcW = (bU2 - bU1) * iw;
+    const bSrcH = (bV2 - bV1) * ih;
+
+    const bDstX = sx + bU1 * sw;
+    const bDstY = sy + bV1 * sh;
+    const bDstW = (bU2 - bU1) * sw;
+    const bDstH = (bV2 - bV1) * sh;
+
+    targetCtx.drawImage(
+      img,
+      bSrcX, bSrcY, bSrcW, bSrcH,
+      bDstX, bDstY, bDstW, bDstH
+    );
+
+    // Warm sunlit petal shimmer
+    const shimmer = Math.sin(t * 1.8) * 0.03 + 0.04;
+    const sunGrad = targetCtx.createRadialGradient(
+      sx + sw * 0.52, sy + sh * 0.68, 40 * scale,
+      sx + sw * 0.52, sy + sh * 0.68, sw * 0.58
+    );
+    if (productId === 'rose') {
+      sunGrad.addColorStop(0, `rgba(255, 220, 205, ${shimmer * 1.3})`);
+      sunGrad.addColorStop(0.5, `rgba(255, 185, 195, ${shimmer * 0.7})`);
+      sunGrad.addColorStop(1, 'rgba(255, 200, 180, 0)');
+    } else if (productId === 'white_oud') {
+      sunGrad.addColorStop(0, `rgba(255, 252, 245, ${shimmer * 1.2})`);
+      sunGrad.addColorStop(0.5, `rgba(242, 228, 205, ${shimmer * 0.6})`);
+      sunGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+    } else if (productId === 'honey_oud') {
+      sunGrad.addColorStop(0, `rgba(255, 228, 150, ${shimmer * 1.5})`);
+      sunGrad.addColorStop(0.5, `rgba(235, 180, 80, ${shimmer * 0.75})`);
+      sunGrad.addColorStop(1, 'rgba(245, 190, 100, 0)');
+    }
+    targetCtx.fillStyle = sunGrad;
+    targetCtx.fillRect(sx, sy, sw, sh);
+  }
+
+  function renderCurrentFrame(now) {
+    const time = now || performance.now();
     if (activeProduct === 'rose') {
       if (roseBgImg && roseBgImg.complete && roseBgImg.naturalWidth) {
-        drawCover(ctx, roseBgImg, canvas.width, canvas.height);
+        renderLivingCinemagraph(ctx, roseBgImg, canvas.width, canvas.height, 'rose', time);
         if (isMagnifierActive) {
           updateMagnifierView(roseBgImg);
         }
       }
     } else if (activeProduct === 'white_oud') {
       if (whiteOudBgImg && whiteOudBgImg.complete && whiteOudBgImg.naturalWidth) {
-        drawCover(ctx, whiteOudBgImg, canvas.width, canvas.height);
+        renderLivingCinemagraph(ctx, whiteOudBgImg, canvas.width, canvas.height, 'white_oud', time);
         if (isMagnifierActive) {
           updateMagnifierView(whiteOudBgImg);
         }
       }
     } else if (activeProduct === 'honey_oud') {
       if (honeyOudBgImg && honeyOudBgImg.complete && honeyOudBgImg.naturalWidth) {
-        drawCover(ctx, honeyOudBgImg, canvas.width, canvas.height);
+        renderLivingCinemagraph(ctx, honeyOudBgImg, canvas.width, canvas.height, 'honey_oud', time);
         if (isMagnifierActive) {
           updateMagnifierView(honeyOudBgImg);
         }
@@ -656,7 +817,7 @@
       if (elapsed >= frameInterval) {
         lastFrameTime = now - (elapsed % frameInterval);
         currentFrame = (currentFrame + 1) % TOTAL_FRAMES;
-        renderCurrentFrame();
+        renderCurrentFrame(now);
       }
     }
 
@@ -849,22 +1010,76 @@
       ctx.scale(Math.cos(this.rotY), Math.sin(this.rotX));
 
       if (this.type === 'petal') {
-        // Delicate soft ivory/blush jasmine petal
-        ctx.beginPath();
-        ctx.moveTo(0, -drawSize);
-        ctx.bezierCurveTo(drawSize * 0.6, -drawSize * 0.5, drawSize * 0.6, drawSize * 0.5, 0, drawSize);
-        ctx.bezierCurveTo(-drawSize * 0.6, drawSize * 0.5, -drawSize * 0.6, -drawSize * 0.5, 0, -drawSize);
-        ctx.closePath();
+        if (activeProduct === 'rose') {
+          // Velvety soft pink Damask rose petal
+          ctx.beginPath();
+          ctx.moveTo(0, -drawSize * 1.15);
+          ctx.bezierCurveTo(drawSize * 0.85, -drawSize * 0.65, drawSize * 0.8, drawSize * 0.6, 0, drawSize);
+          ctx.bezierCurveTo(-drawSize * 0.8, drawSize * 0.6, -drawSize * 0.85, -drawSize * 0.65, 0, -drawSize * 1.15);
+          ctx.closePath();
 
-        const grad = ctx.createLinearGradient(0, -drawSize, 0, drawSize);
-        grad.addColorStop(0, `rgba(255, 255, 255, ${this.opacity})`);
-        grad.addColorStop(0.5, `rgba(254, 246, 240, ${this.opacity * 0.9})`);
-        grad.addColorStop(1, `rgba(240, 215, 205, ${this.opacity * 0.6})`);
+          const roseGrad = ctx.createLinearGradient(0, -drawSize, 0, drawSize);
+          roseGrad.addColorStop(0, `rgba(255, 235, 240, ${this.opacity})`);
+          roseGrad.addColorStop(0.35, `rgba(255, 185, 205, ${this.opacity * 0.95})`);
+          roseGrad.addColorStop(0.75, `rgba(235, 115, 145, ${this.opacity * 0.85})`);
+          roseGrad.addColorStop(1, `rgba(205, 80, 110, ${this.opacity * 0.6})`);
 
-        ctx.fillStyle = grad;
-        ctx.shadowColor = 'rgba(215, 175, 130, 0.3)';
-        ctx.shadowBlur = 4 * dpr;
-        ctx.fill();
+          ctx.fillStyle = roseGrad;
+          ctx.shadowColor = 'rgba(215, 95, 125, 0.4)';
+          ctx.shadowBlur = 5 * dpr;
+          ctx.fill();
+        } else if (activeProduct === 'white_oud') {
+          // Translucent white orchid petal with golden core
+          ctx.beginPath();
+          ctx.moveTo(0, -drawSize * 1.2);
+          ctx.bezierCurveTo(drawSize * 0.55, -drawSize * 0.5, drawSize * 0.65, drawSize * 0.5, 0, drawSize);
+          ctx.bezierCurveTo(-drawSize * 0.65, drawSize * 0.5, -drawSize * 0.55, -drawSize * 0.5, 0, -drawSize * 1.2);
+          ctx.closePath();
+
+          const orchidGrad = ctx.createLinearGradient(0, -drawSize, 0, drawSize);
+          orchidGrad.addColorStop(0, `rgba(255, 255, 255, ${this.opacity})`);
+          orchidGrad.addColorStop(0.6, `rgba(250, 248, 242, ${this.opacity * 0.9})`);
+          orchidGrad.addColorStop(1, `rgba(235, 215, 175, ${this.opacity * 0.55})`);
+
+          ctx.fillStyle = orchidGrad;
+          ctx.shadowColor = 'rgba(210, 185, 140, 0.35)';
+          ctx.shadowBlur = 4 * dpr;
+          ctx.fill();
+        } else if (activeProduct === 'honey_oud') {
+          // Golden wildflower honey petal with amber glow
+          ctx.beginPath();
+          ctx.moveTo(0, -drawSize);
+          ctx.bezierCurveTo(drawSize * 0.75, -drawSize * 0.4, drawSize * 0.7, drawSize * 0.5, 0, drawSize);
+          ctx.bezierCurveTo(-drawSize * 0.7, drawSize * 0.5, -drawSize * 0.75, -drawSize * 0.4, 0, -drawSize);
+          ctx.closePath();
+
+          const honeyGrad = ctx.createLinearGradient(0, -drawSize, 0, drawSize);
+          honeyGrad.addColorStop(0, `rgba(255, 235, 140, ${this.opacity})`);
+          honeyGrad.addColorStop(0.5, `rgba(240, 175, 55, ${this.opacity * 0.95})`);
+          honeyGrad.addColorStop(1, `rgba(215, 125, 20, ${this.opacity * 0.6})`);
+
+          ctx.fillStyle = honeyGrad;
+          ctx.shadowColor = 'rgba(235, 150, 40, 0.5)';
+          ctx.shadowBlur = 6 * dpr;
+          ctx.fill();
+        } else {
+          // Delicate soft ivory/blush jasmine petal (Blush)
+          ctx.beginPath();
+          ctx.moveTo(0, -drawSize);
+          ctx.bezierCurveTo(drawSize * 0.6, -drawSize * 0.5, drawSize * 0.6, drawSize * 0.5, 0, drawSize);
+          ctx.bezierCurveTo(-drawSize * 0.6, drawSize * 0.5, -drawSize * 0.6, -drawSize * 0.5, 0, -drawSize);
+          ctx.closePath();
+
+          const grad = ctx.createLinearGradient(0, -drawSize, 0, drawSize);
+          grad.addColorStop(0, `rgba(255, 255, 255, ${this.opacity})`);
+          grad.addColorStop(0.5, `rgba(254, 246, 240, ${this.opacity * 0.9})`);
+          grad.addColorStop(1, `rgba(240, 215, 205, ${this.opacity * 0.6})`);
+
+          ctx.fillStyle = grad;
+          ctx.shadowColor = 'rgba(215, 175, 130, 0.3)';
+          ctx.shadowBlur = 4 * dpr;
+          ctx.fill();
+        }
       } else if (this.type === 'gold_leaf') {
         // 24K Royal Gilded Gold Foil Flake (Irregular polygon with gleaming metallic flash)
         ctx.beginPath();
